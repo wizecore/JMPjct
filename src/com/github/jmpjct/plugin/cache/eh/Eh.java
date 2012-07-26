@@ -14,7 +14,7 @@ import com.github.jmpjct.Engine;
 import com.github.jmpjct.mysql.proto.Flags;
 import com.github.jmpjct.mysql.proto.ERR;
 import com.github.jmpjct.mysql.proto.OK;
-import com.github.jmpjct.mysql.proto.ResultSet_Text;
+import com.github.jmpjct.mysql.proto.ResultSet;
 import com.github.jmpjct.mysql.proto.Column;
 import com.github.jmpjct.mysql.proto.Row;
 
@@ -137,7 +137,7 @@ public class Eh extends Base {
         }
         else if (command.equalsIgnoreCase("STATS")) {
             this.logger.trace("STATS");
-            ResultSet_Text rs = new ResultSet_Text();
+            ResultSet rs = new ResultSet();
             Row row = null;
             
             rs.addColumn(new Column("Key"));
@@ -176,7 +176,7 @@ public class Eh extends Base {
         }
         else if (command.equalsIgnoreCase("INFO")) {
             this.logger.trace("INFO");
-            ResultSet_Text rs = new ResultSet_Text();
+            ResultSet rs = new ResultSet();
             Row row = null;
             
             rs.addColumn(new Column("Key"));
@@ -223,7 +223,7 @@ public class Eh extends Base {
             this.logger.trace("DUMP KEYS");
             List keys = this.cache.getKeysWithExpiryCheck();
             
-            ResultSet_Text rs = new ResultSet_Text();
+            ResultSet rs = new ResultSet();
             rs.addColumn(new Column("Key"));
             
             for (Object k: keys) {

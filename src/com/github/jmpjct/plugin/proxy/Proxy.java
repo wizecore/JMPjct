@@ -13,7 +13,7 @@ import com.github.jmpjct.mysql.proto.Packet;
 import com.github.jmpjct.mysql.proto.Flags;
 import com.github.jmpjct.mysql.proto.Auth_Challenge;
 import com.github.jmpjct.mysql.proto.Auth_Response;
-import com.github.jmpjct.mysql.proto.ResultSet_Text;
+import com.github.jmpjct.mysql.proto.ResultSet;
 import com.github.jmpjct.mysql.proto.Com_Initdb;
 import com.github.jmpjct.mysql.proto.Com_Query;
 
@@ -61,7 +61,7 @@ public class Proxy extends Base {
         context.authChallenge.removeCapabilityFlag(Flags.CLIENT_SSL);
         
         // Set the default result set creation to the server's character set
-        ResultSet_Text.characterSet = context.authChallenge.characterSet;
+        ResultSet.characterSet = context.authChallenge.characterSet;
         
         // Set Replace the packet in the buffer
         context.buffer.add(context.authChallenge.toPacket());

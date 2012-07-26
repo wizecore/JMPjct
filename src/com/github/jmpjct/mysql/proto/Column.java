@@ -24,7 +24,7 @@ public class Column extends Packet {
     
     public Column(String name) {
         // Set this up by default. Allow overrides if needed
-        this.characterSet = ResultSet_Text.characterSet;
+        this.characterSet = ResultSet.characterSet;
         this.name = name;
     }
     

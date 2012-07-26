@@ -7,8 +7,8 @@ package com.github.jmpjct.mysql.proto;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
-public class ResultSet_Text {
-    public Logger logger = Logger.getLogger("MySQL.ResultSet.Text");
+public class ResultSet {
+    public Logger logger = Logger.getLogger("MySQL.ResultSet");
     
     public long sequenceId = 1;
     public static long characterSet = 0;
