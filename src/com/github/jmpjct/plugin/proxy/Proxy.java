@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.BufferedInputStream;
 import org.apache.log4j.Logger;
 import com.github.jmpjct.JMP;
 import com.github.jmpjct.plugin.Base;
@@ -44,9 +45,10 @@ public class Proxy extends Base {
         this.mysqlSocket = new Socket(this.mysqlHost, this.mysqlPort);
         this.mysqlSocket.setPerformancePreferences(0, 2, 1);
         this.mysqlSocket.setTcpNoDelay(true);
+        this.mysqlSocket.setTrafficClass(0x10);
         
         this.logger.info("Connected to mysql server at "+this.mysqlHost+":"+this.mysqlPort);
-        this.mysqlIn = this.mysqlSocket.getInputStream();
+        this.mysqlIn = new BufferedInputStream(this.mysqlSocket.getInputStream(), 16384);
         this.mysqlOut = this.mysqlSocket.getOutputStream();
     }
     

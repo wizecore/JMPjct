@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import com.github.jmpjct.plugin.Base;
@@ -63,8 +64,9 @@ public class Engine implements Runnable {
         this.clientSocket = clientSocket;
         this.clientSocket.setPerformancePreferences(0, 2, 1);
         this.clientSocket.setTcpNoDelay(true);
+        this.clientSocket.setTrafficClass(0x10);
         
-        this.clientIn = this.clientSocket.getInputStream();
+        this.clientIn = new BufferedInputStream(this.clientSocket.getInputStream(), 16384);
         this.clientOut = this.clientSocket.getOutputStream();
     }
 
