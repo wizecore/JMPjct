@@ -7,7 +7,7 @@ package com.github.jmpjct.mysql.proto;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
-public class MySQL_Com_Dropdb extends MySQL_Packet {
+public class Com_Dropdb extends Packet {
     public Logger logger = Logger.getLogger("MySQL.Com.Dropdb");
     
     public String schema = "";
@@ -16,8 +16,8 @@ public class MySQL_Com_Dropdb extends MySQL_Packet {
         this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
-        payload.add(MySQL_Proto.build_byte(MySQL_Flags.COM_DROP_DB));
-        payload.add(MySQL_Proto.build_fixed_str(this.schema.length(), this.schema));
+        payload.add(Proto.build_byte(Flags.COM_DROP_DB));
+        payload.add(Proto.build_fixed_str(this.schema.length(), this.schema));
         
         return payload;
     }

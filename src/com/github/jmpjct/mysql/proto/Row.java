@@ -6,19 +6,19 @@ package com.github.jmpjct.mysql.proto;
 
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
-import com.github.jmpjct.mysql.proto.MySQL_Packet;
-import com.github.jmpjct.mysql.proto.MySQL_Flags;
+import com.github.jmpjct.mysql.proto.Packet;
+import com.github.jmpjct.mysql.proto.Flags;
 
-public class MySQL_Row extends MySQL_Packet {
+public class Row extends Packet {
     public Logger logger = Logger.getLogger("MySQL.Row");
     
-    public int type = MySQL_Flags.ROW_TYPE_TEXT;
-    public int colType = MySQL_Flags.MYSQL_TYPE_VAR_STRING;
+    public int type = Flags.ROW_TYPE_TEXT;
+    public int colType = Flags.MYSQL_TYPE_VAR_STRING;
     public ArrayList<Object> data = new ArrayList<Object>();
     
-    public MySQL_Row () {}
+    public Row () {}
     
-    public MySQL_Row (String data1) {
+    public Row (String data1) {
         this.addData(data1);
     }
     
@@ -26,27 +26,27 @@ public class MySQL_Row extends MySQL_Packet {
         this.data.add(data);
     }
     
-    public MySQL_Row (String data1, Integer data2) {
+    public Row (String data1, Integer data2) {
         this.addData(data1);
         this.addData(data2);
     }
     
-    public MySQL_Row (String data1, long data2) {
+    public Row (String data1, long data2) {
         this.addData(data1);
         this.addData(data2);
     }
     
-    public MySQL_Row (String data1, float data2) {
+    public Row (String data1, float data2) {
         this.addData(data1);
         this.addData(data2);
     }
     
-    public MySQL_Row (String data1, boolean data2) {
+    public Row (String data1, boolean data2) {
         this.addData(data1);
         this.addData(data2);
     }
     
-    public MySQL_Row (String data1, String data2) {
+    public Row (String data1, String data2) {
         this.addData(data1);
         this.addData(data2);
     }
@@ -75,16 +75,16 @@ public class MySQL_Row extends MySQL_Packet {
         
         for (Object obj: this.data) {
             switch (this.type) {
-                case MySQL_Flags.ROW_TYPE_TEXT: 
+                case Flags.ROW_TYPE_TEXT: 
                     if (obj instanceof String)
-                        payload.add(MySQL_Proto.build_lenenc_str((String)obj));
+                        payload.add(Proto.build_lenenc_str((String)obj));
                     else if (obj instanceof Integer || obj == null)
-                        payload.add(MySQL_Proto.build_lenenc_int((Integer)obj));
+                        payload.add(Proto.build_lenenc_int((Integer)obj));
                     else {
                         // trigger error
                     }
                     break;
-                case MySQL_Flags.ROW_TYPE_BINARY:
+                case Flags.ROW_TYPE_BINARY:
                     break;
                 default:
                     break;

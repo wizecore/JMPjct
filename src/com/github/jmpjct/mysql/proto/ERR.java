@@ -11,7 +11,7 @@ package com.github.jmpjct.mysql.proto;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
-public class MySQL_ERR extends MySQL_Packet {
+public class ERR extends Packet {
     public Logger logger = Logger.getLogger("MySQL.ERR");
     
     public long errorCode = 0;
@@ -22,11 +22,11 @@ public class MySQL_ERR extends MySQL_Packet {
         this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
-        payload.add(MySQL_Proto.build_byte(MySQL_Flags.ERR));
-        payload.add(MySQL_Proto.build_fixed_int(2, this.errorCode));
-        payload.add(MySQL_Proto.build_byte((byte)'#'));
-        payload.add(MySQL_Proto.build_fixed_str(5, this.sqlState));
-        payload.add(MySQL_Proto.build_fixed_str(this.errorMessage.length(), this.errorMessage));
+        payload.add(Proto.build_byte(Flags.ERR));
+        payload.add(Proto.build_fixed_int(2, this.errorCode));
+        payload.add(Proto.build_byte((byte)'#'));
+        payload.add(Proto.build_fixed_str(5, this.sqlState));
+        payload.add(Proto.build_fixed_str(this.errorMessage.length(), this.errorMessage));
         
         return payload;
     }

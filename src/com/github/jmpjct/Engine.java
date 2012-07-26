@@ -12,9 +12,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import com.github.jmpjct.plugin.Base;
-import com.github.jmpjct.mysql.proto.MySQL_Auth_Challenge;
-import com.github.jmpjct.mysql.proto.MySQL_Auth_Response;
-import com.github.jmpjct.mysql.proto.MySQL_Flags;
+import com.github.jmpjct.mysql.proto.Auth_Challenge;
+import com.github.jmpjct.mysql.proto.Auth_Response;
+import com.github.jmpjct.mysql.proto.Flags;
 
 public class Engine extends Thread {
     public Logger logger = Logger.getLogger("Engine");
@@ -36,11 +36,11 @@ public class Engine extends Thread {
     public boolean running = true;
 
     // What sorta of result set should we expect?
-    public int expectedResultSet = MySQL_Flags.RS_OK;
+    public int expectedResultSet = Flags.RS_OK;
     
     // Connection info
-    public MySQL_Auth_Challenge authChallenge = null;
-    public MySQL_Auth_Response authReply = null;
+    public Auth_Challenge authChallenge = null;
+    public Auth_Response authReply = null;
     
     public String schema = "";
     public String query = "";
@@ -51,10 +51,10 @@ public class Engine extends Thread {
     public boolean bufferResultSet = true;
     
     // Modes
-    public int mode = MySQL_Flags.MODE_INIT;
+    public int mode = Flags.MODE_INIT;
     
     // Allow plugins to muck with the modes
-    public int nextMode = MySQL_Flags.MODE_INIT;
+    public int nextMode = Flags.MODE_INIT;
     
     public Engine(int port, Socket clientSocket, ArrayList<Base> plugins) throws IOException {
         this.port = port;
@@ -72,85 +72,85 @@ public class Engine extends Thread {
         try {
             while (this.running) {
                 switch (this.mode) {
-                    case MySQL_Flags.MODE_INIT:
+                    case Flags.MODE_INIT:
                         this.logger.trace("MODE_INIT");
-                        this.nextMode = MySQL_Flags.MODE_READ_HANDSHAKE;
+                        this.nextMode = Flags.MODE_READ_HANDSHAKE;
                         for (Base plugin : this.plugins)
                             plugin.init(this);
                     
-                    case MySQL_Flags.MODE_READ_HANDSHAKE:
+                    case Flags.MODE_READ_HANDSHAKE:
                         this.logger.trace("MODE_READ_HANDSHAKE");
-                        this.nextMode = MySQL_Flags.MODE_SEND_HANDSHAKE;
+                        this.nextMode = Flags.MODE_SEND_HANDSHAKE;
                         for (Base plugin : this.plugins)
                             plugin.read_handshake(this);
                         break;
                     
-                    case MySQL_Flags.MODE_SEND_HANDSHAKE:
+                    case Flags.MODE_SEND_HANDSHAKE:
                         this.logger.trace("MODE_SEND_HANDSHAKE");
-                        this.nextMode = MySQL_Flags.MODE_READ_AUTH;
+                        this.nextMode = Flags.MODE_READ_AUTH;
                         for (Base plugin : this.plugins)
                             plugin.send_handshake(this);
                         break;
                     
-                    case MySQL_Flags.MODE_READ_AUTH:
+                    case Flags.MODE_READ_AUTH:
                         this.logger.trace("MODE_READ_AUTH");
-                        this.nextMode = MySQL_Flags.MODE_SEND_AUTH;
+                        this.nextMode = Flags.MODE_SEND_AUTH;
                         for (Base plugin : this.plugins)
                             plugin.read_auth(this);
                         break;
                     
-                    case MySQL_Flags.MODE_SEND_AUTH:
+                    case Flags.MODE_SEND_AUTH:
                         this.logger.trace("MODE_SEND_AUTH");
-                        this.nextMode = MySQL_Flags.MODE_READ_AUTH_RESULT;
+                        this.nextMode = Flags.MODE_READ_AUTH_RESULT;
                         for (Base plugin : this.plugins)
                             plugin.send_auth(this);
                         break;
                     
-                    case MySQL_Flags.MODE_READ_AUTH_RESULT:
+                    case Flags.MODE_READ_AUTH_RESULT:
                         this.logger.trace("MODE_READ_AUTH_RESULT");
-                        this.nextMode = MySQL_Flags.MODE_SEND_AUTH_RESULT;
+                        this.nextMode = Flags.MODE_SEND_AUTH_RESULT;
                         for (Base plugin : this.plugins)
                             plugin.read_auth_result(this);
                         break;
                     
-                    case MySQL_Flags.MODE_SEND_AUTH_RESULT:
+                    case Flags.MODE_SEND_AUTH_RESULT:
                         this.logger.trace("MODE_SEND_AUTH_RESULT");
-                        this.nextMode = MySQL_Flags.MODE_READ_QUERY;
+                        this.nextMode = Flags.MODE_READ_QUERY;
                         for (Base plugin : this.plugins)
                             plugin.send_auth_result(this);
                         break;
                     
-                    case MySQL_Flags.MODE_READ_QUERY:
+                    case Flags.MODE_READ_QUERY:
                         this.logger.trace("MODE_READ_QUERY");
-                        this.nextMode = MySQL_Flags.MODE_SEND_QUERY;
+                        this.nextMode = Flags.MODE_SEND_QUERY;
                         for (Base plugin : this.plugins)
                             plugin.read_query(this);
                         break;
                     
-                    case MySQL_Flags.MODE_SEND_QUERY:
+                    case Flags.MODE_SEND_QUERY:
                         this.logger.trace("MODE_SEND_QUERY");
-                        this.nextMode = MySQL_Flags.MODE_READ_QUERY_RESULT;
+                        this.nextMode = Flags.MODE_READ_QUERY_RESULT;
                         for (Base plugin : this.plugins)
                             plugin.send_query(this);
                         break;
                     
-                    case MySQL_Flags.MODE_READ_QUERY_RESULT:
+                    case Flags.MODE_READ_QUERY_RESULT:
                         this.logger.trace("MODE_READ_QUERY_RESULT");
-                        this.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+                        this.nextMode = Flags.MODE_SEND_QUERY_RESULT;
                         for (Base plugin : this.plugins)
                             plugin.read_query_result(this);
                         break;
                     
-                    case MySQL_Flags.MODE_SEND_QUERY_RESULT:
+                    case Flags.MODE_SEND_QUERY_RESULT:
                         this.logger.trace("MODE_SEND_QUERY_RESULT");
-                        this.nextMode = MySQL_Flags.MODE_READ_QUERY;
+                        this.nextMode = Flags.MODE_READ_QUERY;
                         for (Base plugin : this.plugins)
                             plugin.send_query_result(this);
                         break;
                     
-                    case MySQL_Flags.MODE_CLEANUP:
+                    case Flags.MODE_CLEANUP:
                         this.logger.trace("MODE_CLEANUP");
-                        this.nextMode = MySQL_Flags.MODE_CLEANUP;
+                        this.nextMode = Flags.MODE_CLEANUP;
                         for (Base plugin : this.plugins)
                             plugin.cleanup(this);
                         this.halt();

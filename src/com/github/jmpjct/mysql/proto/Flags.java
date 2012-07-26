@@ -6,7 +6,7 @@ package com.github.jmpjct.mysql.proto;
  * and put them here
  */
 
-public class MySQL_Flags {
+public class Flags {
     public static final int MODE_INIT                           = 0;  // Connection opened
     public static final int MODE_READ_HANDSHAKE                 = 1;  // Read the handshake from the server and process it
     public static final int MODE_SEND_HANDSHAKE                 = 2;  // Forward the handshake from the server

@@ -7,7 +7,7 @@ package com.github.jmpjct.mysql.proto;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
-public class MySQL_Com_Query extends MySQL_Packet {
+public class Com_Query extends Packet {
     public Logger logger = Logger.getLogger("MySQL.Com.Query");
     
     public String query = "";
@@ -16,16 +16,16 @@ public class MySQL_Com_Query extends MySQL_Packet {
         this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
-        payload.add(MySQL_Proto.build_byte(MySQL_Flags.COM_QUERY));
-        payload.add(MySQL_Proto.build_fixed_str(this.query.length(), this.query));
+        payload.add(Proto.build_byte(Flags.COM_QUERY));
+        payload.add(Proto.build_fixed_str(this.query.length(), this.query));
         
         return payload;
     }
 
-    public static MySQL_Com_Query loadFromPacket(byte[] packet) {
+    public static Com_Query loadFromPacket(byte[] packet) {
         Logger.getLogger("MySQL.Com.Query").trace("loadFromPacket");
-        MySQL_Com_Query obj = new MySQL_Com_Query();
-        MySQL_Proto proto = new MySQL_Proto(packet, 3);
+        Com_Query obj = new Com_Query();
+        Proto proto = new Proto(packet, 3);
         
         obj.sequenceId = proto.get_fixed_int(1);
         

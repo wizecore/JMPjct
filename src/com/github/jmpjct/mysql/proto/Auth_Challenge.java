@@ -7,14 +7,14 @@ package com.github.jmpjct.mysql.proto;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
-public class MySQL_Auth_Challenge extends MySQL_Packet {
+public class Auth_Challenge extends Packet {
     public Logger logger = Logger.getLogger("MySQL.Auth.Challenge");
     
     public long protocolVersion = 0x0a;
     public String serverVersion = "";
     public long connectionId = 0;
     public String challenge1 = "";
-    public long capabilityFlags = MySQL_Flags.CLIENT_PROTOCOL_41;
+    public long capabilityFlags = Flags.CLIENT_PROTOCOL_41;
     public long characterSet = 0;
     public long statusFlags = 0;
     public String challenge2 = "";
@@ -55,28 +55,28 @@ public class MySQL_Auth_Challenge extends MySQL_Packet {
         this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
-        payload.add( MySQL_Proto.build_fixed_int(1, this.protocolVersion));
-        payload.add( MySQL_Proto.build_null_str(this.serverVersion));
-        payload.add( MySQL_Proto.build_fixed_int(4, this.connectionId));
-        payload.add( MySQL_Proto.build_fixed_str(8, this.challenge1));
-        payload.add( MySQL_Proto.build_filler(1));
-        payload.add( MySQL_Proto.build_fixed_int(2, this.capabilityFlags));
-        payload.add( MySQL_Proto.build_fixed_int(1, this.characterSet));
-        payload.add( MySQL_Proto.build_fixed_int(2, this.statusFlags));
-        payload.add( MySQL_Proto.build_fixed_str(13, ""));
+        payload.add( Proto.build_fixed_int(1, this.protocolVersion));
+        payload.add( Proto.build_null_str(this.serverVersion));
+        payload.add( Proto.build_fixed_int(4, this.connectionId));
+        payload.add( Proto.build_fixed_str(8, this.challenge1));
+        payload.add( Proto.build_filler(1));
+        payload.add( Proto.build_fixed_int(2, this.capabilityFlags));
+        payload.add( Proto.build_fixed_int(1, this.characterSet));
+        payload.add( Proto.build_fixed_int(2, this.statusFlags));
+        payload.add( Proto.build_fixed_str(13, ""));
         
-        if (this.hasCapabilityFlag(MySQL_Flags.CLIENT_SECURE_CONNECTION)) {
-            payload.add( MySQL_Proto.build_fixed_str(12, this.challenge2));
-            payload.add( MySQL_Proto.build_filler(1));
+        if (this.hasCapabilityFlag(Flags.CLIENT_SECURE_CONNECTION)) {
+            payload.add( Proto.build_fixed_str(12, this.challenge2));
+            payload.add( Proto.build_filler(1));
         }
         
         return payload;
     }
     
-    public static MySQL_Auth_Challenge loadFromPacket(byte[] packet) {
+    public static Auth_Challenge loadFromPacket(byte[] packet) {
         Logger.getLogger("MySQL.Auth.Challenge").trace("loadFromPacket");
-        MySQL_Auth_Challenge obj = new MySQL_Auth_Challenge();
-        MySQL_Proto proto = new MySQL_Proto(packet, 3);
+        Auth_Challenge obj = new Auth_Challenge();
+        Proto proto = new Proto(packet, 3);
         
         obj.sequenceId = proto.get_fixed_int(1);
         obj.protocolVersion = proto.get_fixed_int(1);
@@ -89,7 +89,7 @@ public class MySQL_Auth_Challenge extends MySQL_Packet {
         obj.statusFlags = proto.get_fixed_int(2);
         proto.get_fixed_str(13);
         
-        if (obj.hasCapabilityFlag(MySQL_Flags.CLIENT_SECURE_CONNECTION)) {
+        if (obj.hasCapabilityFlag(Flags.CLIENT_SECURE_CONNECTION)) {
             obj.challenge2 = proto.get_fixed_str(12);
             proto.get_fixed_str(1);
         }

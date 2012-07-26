@@ -7,14 +7,14 @@ package com.github.jmpjct.mysql.proto;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
-public class MySQL_Com_Ping extends MySQL_Packet {
-    public Logger logger = Logger.getLogger("MySQL.Com.Ping");
+public class Com_Statistics extends Packet {
+    public Logger logger = Logger.getLogger("MySQL.Com.Statistics");
     
     public ArrayList<byte[]> getPayload() {
         this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
-        payload.add(MySQL_Proto.build_byte(MySQL_Flags.COM_PING));
+        payload.add(Proto.build_byte(Flags.COM_STATISTICS));
         
         return payload;
     }

@@ -6,17 +6,17 @@ package com.github.jmpjct.mysql.proto;
 
 import org.apache.log4j.Logger;
 
-public class MySQL_Proto {
+public class Proto {
     public Logger logger = Logger.getLogger("MySQL.Proto");
     
     public byte[] packet = null;
     public int offset = 0;
     
-    public MySQL_Proto(byte[] packet) {
+    public Proto(byte[] packet) {
         this.packet = packet;
     }
     
-    public MySQL_Proto(byte[] packet, int offset) {
+    public Proto(byte[] packet, int offset) {
         this.packet = packet;
         this.offset = offset;
     }
@@ -105,8 +105,8 @@ public class MySQL_Proto {
             return packet;
         }
         
-        byte[] size = MySQL_Proto.build_lenenc_int(str.length());
-        byte[] strByte = MySQL_Proto.build_fixed_str(str.length(), str);
+        byte[] size = Proto.build_lenenc_int(str.length());
+        byte[] strByte = Proto.build_fixed_str(str.length(), str);
         byte[] packet = new byte[size.length + strByte.length];
         System.arraycopy(size, 0, packet, 0, size.length);
         System.arraycopy(strByte, 0, packet, size.length, strByte.length);
@@ -115,7 +115,7 @@ public class MySQL_Proto {
     
     public static byte[] build_null_str(String str) {
         Logger.getLogger("MySQL.Proto").trace("build_null_str");
-        return MySQL_Proto.build_fixed_str(str.length() + 1, str);
+        return Proto.build_fixed_str(str.length() + 1, str);
     }
     
     public static byte[] build_fixed_str(int size, String str) {
@@ -218,7 +218,7 @@ public class MySQL_Proto {
         int end = this.offset+len;
         
         for (int i = start; i < end; i++) {
-            str += MySQL_Proto.int2char(packet[i]);
+            str += Proto.int2char(packet[i]);
             this.offset += 1;
         }
         
@@ -236,7 +236,7 @@ public class MySQL_Proto {
                 this.offset += 1;
                 break;
             }
-            str += MySQL_Proto.int2char(packet[i]);
+            str += Proto.int2char(packet[i]);
             this.offset += 1;
         }
         
@@ -254,7 +254,7 @@ public class MySQL_Proto {
                 this.offset += 1;
                 break;
             }
-            str += MySQL_Proto.int2char(packet[i]);
+            str += Proto.int2char(packet[i]);
             this.offset += 1;
         }
         
@@ -269,7 +269,7 @@ public class MySQL_Proto {
         int end = this.offset + size;
         
         for (int i = start; i < end; i++) {
-            str += MySQL_Proto.int2char(packet[i]);
+            str += Proto.int2char(packet[i]);
             this.offset += 1;
         }
         

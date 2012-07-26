@@ -11,12 +11,12 @@ import net.sf.ehcache.terracotta.TerracottaNotRunningException;
 import com.github.jmpjct.JMP;
 import com.github.jmpjct.plugin.Base;
 import com.github.jmpjct.Engine;
-import com.github.jmpjct.mysql.proto.MySQL_Flags;
-import com.github.jmpjct.mysql.proto.MySQL_ERR;
-import com.github.jmpjct.mysql.proto.MySQL_OK;
-import com.github.jmpjct.mysql.proto.MySQL_ResultSet_Text;
-import com.github.jmpjct.mysql.proto.MySQL_Column;
-import com.github.jmpjct.mysql.proto.MySQL_Row;
+import com.github.jmpjct.mysql.proto.Flags;
+import com.github.jmpjct.mysql.proto.ERR;
+import com.github.jmpjct.mysql.proto.OK;
+import com.github.jmpjct.mysql.proto.ResultSet_Text;
+import com.github.jmpjct.mysql.proto.Column;
+import com.github.jmpjct.mysql.proto.Row;
 
 public class Eh extends Base {
     private static Ehcache cache = null;
@@ -88,10 +88,10 @@ public class Eh extends Base {
                 
                 context.clear_buffer();
                 context.buffer = (ArrayList<byte[]>) element.getValue();
-                context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+                context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
                 
                 if (context.buffer.size() == 0) {
-                    MySQL_ERR err = new MySQL_ERR();
+                    ERR err = new ERR();
                     err.sequenceId = context.sequenceId+1;
                     err.errorCode = 1032;
                     err.sqlState = "HY000";
@@ -99,7 +99,7 @@ public class Eh extends Base {
                     
                     context.clear_buffer();
                     context.buffer.add(err.toPacket());
-                    context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+                    context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
                     
                     this.logger.fatal("Cache hit but invalid result!");
                 }
@@ -107,7 +107,7 @@ public class Eh extends Base {
         }
         else if (command.equalsIgnoreCase("FLUSH")) {
             this.logger.trace("FLUSH");
-            MySQL_OK ok = new MySQL_OK();
+            OK ok = new OK();
             
             boolean removed = Eh.cache.remove(this.key);
             if (removed)
@@ -116,18 +116,18 @@ public class Eh extends Base {
             
             context.clear_buffer();
             context.buffer.add(ok.toPacket());
-            context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+            context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
         }
         else if (command.equalsIgnoreCase("FLUSHALL")) {
             this.logger.trace("FLUSHALL");
-            MySQL_OK ok = new MySQL_OK();
+            OK ok = new OK();
             
             Eh.cache.removeAll();
             ok.sequenceId = context.sequenceId+1;
             
             context.clear_buffer();
             context.buffer.add(ok.toPacket());
-            context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+            context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
         }
         else if (command.equalsIgnoreCase("REFRESH")) {
             this.logger.trace("REFRESH");
@@ -137,107 +137,107 @@ public class Eh extends Base {
         }
         else if (command.equalsIgnoreCase("STATS")) {
             this.logger.trace("STATS");
-            MySQL_ResultSet_Text rs = new MySQL_ResultSet_Text();
-            MySQL_Row row = null;
+            ResultSet_Text rs = new ResultSet_Text();
+            Row row = null;
             
-            rs.addColumn(new MySQL_Column("Key"));
-            rs.addColumn(new MySQL_Column("Value"));
+            rs.addColumn(new Column("Key"));
+            rs.addColumn(new Column("Value"));
             
             Statistics stats = Eh.cache.getStatistics();
             
-            rs.addRow(new MySQL_Row("AverageGetTime", stats.getAverageGetTime()));
-            rs.addRow(new MySQL_Row("AverageSearchTime", stats.getAverageSearchTime()));
+            rs.addRow(new Row("AverageGetTime", stats.getAverageGetTime()));
+            rs.addRow(new Row("AverageSearchTime", stats.getAverageSearchTime()));
             
-            rs.addRow(new MySQL_Row("ObjectCount", stats.getObjectCount()));
-            rs.addRow(new MySQL_Row("MemoryStoreObjectCount", stats.getMemoryStoreObjectCount()));
-            rs.addRow(new MySQL_Row("OffHeapStoreObjectCount", stats.getOffHeapStoreObjectCount()));
-            rs.addRow(new MySQL_Row("DiskStoreObjectCount", stats.getDiskStoreObjectCount()));
+            rs.addRow(new Row("ObjectCount", stats.getObjectCount()));
+            rs.addRow(new Row("MemoryStoreObjectCount", stats.getMemoryStoreObjectCount()));
+            rs.addRow(new Row("OffHeapStoreObjectCount", stats.getOffHeapStoreObjectCount()));
+            rs.addRow(new Row("DiskStoreObjectCount", stats.getDiskStoreObjectCount()));
 
-            rs.addRow(new MySQL_Row("CacheHits", stats.getCacheHits()));
-            rs.addRow(new MySQL_Row("CacheMisses", stats.getCacheMisses()));
+            rs.addRow(new Row("CacheHits", stats.getCacheHits()));
+            rs.addRow(new Row("CacheMisses", stats.getCacheMisses()));
 
-            rs.addRow(new MySQL_Row("InMemoryHits", stats.getInMemoryHits()));
-            rs.addRow(new MySQL_Row("InMemoryMisses", stats.getInMemoryMisses()));
+            rs.addRow(new Row("InMemoryHits", stats.getInMemoryHits()));
+            rs.addRow(new Row("InMemoryMisses", stats.getInMemoryMisses()));
 
-            rs.addRow(new MySQL_Row("OffHeapHits", stats.getOffHeapHits()));
-            rs.addRow(new MySQL_Row("OffHeapMisses", stats.getOffHeapMisses()));
+            rs.addRow(new Row("OffHeapHits", stats.getOffHeapHits()));
+            rs.addRow(new Row("OffHeapMisses", stats.getOffHeapMisses()));
 
-            rs.addRow(new MySQL_Row("OnDiskHits", stats.getOnDiskHits()));
-            rs.addRow(new MySQL_Row("OnDiskMisses", stats.getOnDiskMisses()));
+            rs.addRow(new Row("OnDiskHits", stats.getOnDiskHits()));
+            rs.addRow(new Row("OnDiskMisses", stats.getOnDiskMisses()));
 
-            rs.addRow(new MySQL_Row("EvictionCount", stats.getEvictionCount()));
+            rs.addRow(new Row("EvictionCount", stats.getEvictionCount()));
 
-            rs.addRow(new MySQL_Row("SearchesPerSecond", stats.getSearchesPerSecond()));
-            rs.addRow(new MySQL_Row("WriterQueueSize", stats.getWriterQueueSize()));
+            rs.addRow(new Row("SearchesPerSecond", stats.getSearchesPerSecond()));
+            rs.addRow(new Row("WriterQueueSize", stats.getWriterQueueSize()));
             
             context.clear_buffer();
             context.buffer = rs.toPackets();
-            context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+            context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
         }
         else if (command.equalsIgnoreCase("INFO")) {
             this.logger.trace("INFO");
-            MySQL_ResultSet_Text rs = new MySQL_ResultSet_Text();
-            MySQL_Row row = null;
+            ResultSet_Text rs = new ResultSet_Text();
+            Row row = null;
             
-            rs.addColumn(new MySQL_Column("Key"));
-            rs.addColumn(new MySQL_Column("Value"));
+            rs.addColumn(new Column("Key"));
+            rs.addColumn(new Column("Value"));
             
-            rs.addRow(new MySQL_Row("getGuid", Eh.cache.getGuid()));
-            rs.addRow(new MySQL_Row("getName", Eh.cache.getName()));
-            rs.addRow(new MySQL_Row("getStatus", Eh.cache.getStatus().toString()));
-            rs.addRow(new MySQL_Row("isDisabled", Eh.cache.isDisabled()));
-            rs.addRow(new MySQL_Row("isSearchable", Eh.cache.isSearchable()));
+            rs.addRow(new Row("getGuid", Eh.cache.getGuid()));
+            rs.addRow(new Row("getName", Eh.cache.getName()));
+            rs.addRow(new Row("getStatus", Eh.cache.getStatus().toString()));
+            rs.addRow(new Row("isDisabled", Eh.cache.isDisabled()));
+            rs.addRow(new Row("isSearchable", Eh.cache.isSearchable()));
             
             try {
-                rs.addRow(new MySQL_Row("isNodeBulkLoadEnabled", Eh.cache.isNodeBulkLoadEnabled()));
-                rs.addRow(new MySQL_Row("isClusterBulkLoadEnabled", Eh.cache.isClusterBulkLoadEnabled()));
+                rs.addRow(new Row("isNodeBulkLoadEnabled", Eh.cache.isNodeBulkLoadEnabled()));
+                rs.addRow(new Row("isClusterBulkLoadEnabled", Eh.cache.isClusterBulkLoadEnabled()));
             }
             catch (UnsupportedOperationException e) {}
             catch (TerracottaNotRunningException e) {}
             
-            rs.addRow(new MySQL_Row("isStatisticsEnabled", Eh.cache.isStatisticsEnabled()));
-            rs.addRow(new MySQL_Row("isSampledStatisticsEnabled", Eh.cache.isSampledStatisticsEnabled()));
+            rs.addRow(new Row("isStatisticsEnabled", Eh.cache.isStatisticsEnabled()));
+            rs.addRow(new Row("isSampledStatisticsEnabled", Eh.cache.isSampledStatisticsEnabled()));
             
             switch (Eh.cache.getStatisticsAccuracy()) {
                 case Statistics.STATISTICS_ACCURACY_BEST_EFFORT:
-                    rs.addRow(new MySQL_Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_BEST_EFFORT"));
+                    rs.addRow(new Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_BEST_EFFORT"));
                     break;
                 case Statistics.STATISTICS_ACCURACY_GUARANTEED:
-                    rs.addRow(new MySQL_Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_GUARANTEED"));
+                    rs.addRow(new Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_GUARANTEED"));
                     break;
                 case Statistics.STATISTICS_ACCURACY_NONE:
-                    rs.addRow(new MySQL_Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_NONE"));
+                    rs.addRow(new Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_NONE"));
                     break;
                 default:
-                    rs.addRow(new MySQL_Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_UNKNOWN"));
+                    rs.addRow(new Row("getStatisticsAccuracy", "STATISTICS_ACCURACY_UNKNOWN"));
                     break;
             }
             
-            rs.addRow(new MySQL_Row("hasAbortedSizeOf", Eh.cache.hasAbortedSizeOf()));
+            rs.addRow(new Row("hasAbortedSizeOf", Eh.cache.hasAbortedSizeOf()));
             
             context.clear_buffer();
             context.buffer = rs.toPackets();
-            context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+            context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
         }
         else if (command.equalsIgnoreCase("DUMP KEYS")) {
             this.logger.trace("DUMP KEYS");
             List keys = this.cache.getKeysWithExpiryCheck();
             
-            MySQL_ResultSet_Text rs = new MySQL_ResultSet_Text();
-            rs.addColumn(new MySQL_Column("Key"));
+            ResultSet_Text rs = new ResultSet_Text();
+            rs.addColumn(new Column("Key"));
             
             for (Object k: keys) {
                 this.logger.trace("Key: '"+k+"'");
-                rs.addRow(new MySQL_Row(k.toString())); 
+                rs.addRow(new Row(k.toString())); 
             }
             
             context.clear_buffer();
             context.buffer = rs.toPackets();
-            context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+            context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
         }
         else {
             this.logger.trace("FAIL");
-            MySQL_ERR err = new MySQL_ERR();
+            ERR err = new ERR();
             err.sequenceId = context.sequenceId+1;
             err.errorCode = 1047;
             err.sqlState = "08S01";
@@ -245,7 +245,7 @@ public class Eh extends Base {
             
             context.clear_buffer();
             context.buffer.add(err.toPacket());
-            context.nextMode = MySQL_Flags.MODE_SEND_QUERY_RESULT;
+            context.nextMode = Flags.MODE_SEND_QUERY_RESULT;
             
             this.logger.fatal(command+" is unknown!");
         }

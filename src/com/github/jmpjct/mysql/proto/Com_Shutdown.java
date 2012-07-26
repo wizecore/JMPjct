@@ -7,26 +7,26 @@ package com.github.jmpjct.mysql.proto;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
-public class MySQL_Com_Shutdown extends MySQL_Packet {
+public class Com_Shutdown extends Packet {
     public Logger logger = Logger.getLogger("MySQL.Com.Shutdown");
     
-    public long shutdownType = MySQL_Flags.SHUTDOWN_DEFAULT;
+    public long shutdownType = Flags.SHUTDOWN_DEFAULT;
     
     public ArrayList<byte[]> getPayload() {
         this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
-        payload.add(MySQL_Proto.build_byte(MySQL_Flags.COM_SHUTDOWN));
-        if (this.shutdownType != MySQL_Flags.SHUTDOWN_DEFAULT)
-            payload.add(MySQL_Proto.build_fixed_int(1, this.shutdownType));
+        payload.add(Proto.build_byte(Flags.COM_SHUTDOWN));
+        if (this.shutdownType != Flags.SHUTDOWN_DEFAULT)
+            payload.add(Proto.build_fixed_int(1, this.shutdownType));
         
         return payload;
     }
     
-    public static MySQL_Com_Shutdown loadFromPacket(byte[] packet) {
+    public static Com_Shutdown loadFromPacket(byte[] packet) {
         Logger.getLogger("MySQL.Com.Shutdown").trace("loadFromPacket");
-        MySQL_Com_Shutdown obj = new MySQL_Com_Shutdown();
-        MySQL_Proto proto = new MySQL_Proto(packet, 3);
+        Com_Shutdown obj = new Com_Shutdown();
+        Proto proto = new Proto(packet, 3);
         
         obj.sequenceId = proto.get_fixed_int(1);
         
