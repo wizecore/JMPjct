@@ -67,6 +67,8 @@
               failonerror="true">
             <jvmarg value="-Xmx2g" />
             <jvmarg value="-Xshare:off" />
+            <jvmarg value="-server" />
+            <jvmarg value="-XX:+UseCompressedOops" />
             
             <sysproperty key="config" value="${config}" />
         </java>
