@@ -8,8 +8,9 @@ package com.github.jmpjct;
 import java.net.Socket;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.BufferedInputStream;
+import java.io.OutputStream;
+import java.io.BufferedOutputStream;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import com.github.jmpjct.plugin.Base;
@@ -67,7 +68,7 @@ public class Engine implements Runnable {
         this.clientSocket.setTrafficClass(0x10);
         
         this.clientIn = new BufferedInputStream(this.clientSocket.getInputStream(), 16384);
-        this.clientOut = this.clientSocket.getOutputStream();
+        this.clientOut = new BufferedOutputStream(this.clientSocket.getOutputStream(), 16384);
     }
 
     public void run() {
