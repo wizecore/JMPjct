@@ -5,7 +5,7 @@
     <property name="version" value="0.1.0" />
     <property name="build.dir" value="build" />
     <property name="javac.source" value="1.6" />
-	<property name="javac.debug" value="true" />
+	<property name="javac.debug" value="false" />
 	<property name="javac.encoding" value="8859_1"/>
 
     <property name="lib.dir" value="lib" />
