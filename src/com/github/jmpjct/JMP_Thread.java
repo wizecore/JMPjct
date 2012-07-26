@@ -12,9 +12,11 @@ import java.net.ServerSocket;
 import org.apache.log4j.Logger;
 import com.github.jmpjct.plugin.Base;
 import com.github.jmpjct.JMP;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import com.github.jmpjct.plugin.*;
 
-public class JMP_Thread extends Thread {
+public class JMP_Thread implements Runnable {
     int port;
     boolean listening = true;
     ServerSocket listener = null;
@@ -22,6 +24,7 @@ public class JMP_Thread extends Thread {
     Logger logger = Logger.getLogger("JMP_Thread");
     
     public JMP_Thread(int port) {
+        Thread.currentThread().setName("Listener: "+port);
         this.port = port;
     }
     
@@ -37,6 +40,7 @@ public class JMP_Thread extends Thread {
         this.logger.info("Listening on "+this.port);
         
         String[] ps = new String[0];
+        ExecutorService tp = Executors.newCachedThreadPool();
         
         if (JMP.config.getProperty("plugins") != null)
             ps = JMP.config.getProperty("plugins").split(",");
@@ -62,7 +66,7 @@ public class JMP_Thread extends Thread {
                 }
             }
             try {
-                new Engine(this.port, this.listener.accept(), plugins).start();
+                tp.submit(new Engine(this.port, this.listener.accept(), plugins));
             }
             catch (java.io.IOException e) {
                 this.logger.fatal("Accept fatal "+e);
@@ -71,6 +75,7 @@ public class JMP_Thread extends Thread {
         }
     
         try {
+            tp.shutdown();
             this.listener.close();
         }
         catch (java.io.IOException e) {}

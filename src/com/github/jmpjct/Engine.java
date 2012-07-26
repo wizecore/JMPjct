@@ -16,7 +16,7 @@ import com.github.jmpjct.mysql.proto.Auth_Challenge;
 import com.github.jmpjct.mysql.proto.Auth_Response;
 import com.github.jmpjct.mysql.proto.Flags;
 
-public class Engine extends Thread {
+public class Engine implements Runnable {
     public Logger logger = Logger.getLogger("Engine");
     
     public int port = 0;

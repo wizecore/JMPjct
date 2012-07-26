@@ -177,8 +177,15 @@ public class Proxy extends Base {
         context.clear_buffer();
     }
     
-    public void cleanup(Engine context) throws IOException {
+    public void cleanup(Engine context) {
         this.logger.trace("cleanup");
-        this.mysqlSocket.close();
+        if (this.mysqlSocket == null) {
+            return;
+        }
+        
+        try {
+            this.mysqlSocket.close();
+        }
+        catch(IOException e) {}
     }
 }
