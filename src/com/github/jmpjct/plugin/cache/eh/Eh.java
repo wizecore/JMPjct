@@ -22,7 +22,7 @@ public class Eh extends Base {
     private static Ehcache cache = null;
     private static CacheManager cachemanager = null;
     
-    public Logger logger = Logger.getLogger("Plugin.Ehcache");
+    public Logger logger = Logger.getLogger("Plugin.Cache.Eh");
     private int TTL = 0;
     private String key = "";
     
