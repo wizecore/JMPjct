@@ -65,6 +65,7 @@
 	</target>
     
     <target name="run" description="Run JMP">
+        <antcall target="build" />
         <java jar="JMP-${version}.jar"
               classpathref="classpath"
               fork="true"
