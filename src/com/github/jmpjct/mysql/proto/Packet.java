@@ -111,37 +111,70 @@ public abstract class Packet {
         
         // Read the columns and the EOF field
         for (int i = 0; i < (colCount+1); i++) {
-            // Evil optimization
-            if (!bufferResultSet) {
-                Packet.write(out, buffer);
-                buffer = new ArrayList<byte[]>();
-            }
-                
             packet = Packet.read_packet(in);
             if (packet == null) {
                 throw new IOException();
             }
             buffer.add(packet);
+            
+            // Evil optimization
+            if (!bufferResultSet) {
+                Packet.write(out, buffer);
+                out.flush();
+                buffer.clear();
+            }
         }
         
-        do {
-            // Evil optimization
-            if (!bufferResultSet) {
-                Packet.write(out, buffer);
-                buffer = new ArrayList<byte[]>();
-            }
-            
+        int packedPacketSize = 65535;
+        byte[] packedPacket = new byte[packedPacketSize];
+        int position = 0;
+        
+        while (true) {
             packet = Packet.read_packet(in);
+            
             if (packet == null) {
                 throw new IOException();
             }
-            buffer.add(packet);
-        } while (Packet.getType(packet) != Flags.EOF && Packet.getType(packet) != Flags.ERR);
+            
+            int packetType = Packet.getType(packet);
+            
+            if (packetType == Flags.EOF || packetType == Flags.ERR) {
+                byte[] newPackedPacket = new byte[position];
+                System.arraycopy(packedPacket, 0, newPackedPacket, 0, position);
+                buffer.add(newPackedPacket);
+                packedPacket = packet;
+                break;
+            }
+            
+            if (position+packet.length > packedPacketSize) {
+                int subsize = packedPacketSize - position;
+                System.arraycopy(packet, 0, packedPacket, position, subsize);
+                buffer.add(packedPacket);
+                
+                // Evil optimization
+                if (!bufferResultSet) {
+                    Packet.write(out, buffer);
+                    out.flush();
+                    buffer.clear();
+                }
+                
+                packedPacket = new byte[packedPacketSize];
+                position = 0;
+                System.arraycopy(packet, subsize, packedPacket, position, packet.length-subsize);
+                position += packet.length-subsize;
+            }
+            else {
+                System.arraycopy(packet, 0, packedPacket, position, packet.length);
+                position += packet.length;
+            }
+        }
+        buffer.add(packedPacket);
         
         // Evil optimization
         if (!bufferResultSet) {
             Packet.write(out, buffer);
-            buffer = new ArrayList<byte[]>();
+            buffer.clear();
+            out.flush();
         }
         
         if (Packet.getType(packet) == Flags.ERR)
