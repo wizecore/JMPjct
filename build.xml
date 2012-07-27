@@ -44,6 +44,8 @@
 			source="${javac.source}">
 			<src path="${src.dir}" />
 		</javac>
+        
+        <delete file="JMP-${version}.jar"/>
 
 		<jar destfile="JMP-${version}.jar"
              basedir="${build.dir}"
