@@ -49,11 +49,13 @@
 
 		<jar destfile="JMP-${version}.jar"
              basedir="${build.dir}"
-             includes="*.class"
              manifest="JarManifest"
              compress="true"
              update="true"
-        />
+             whenmanifestonly="fail"
+        >
+            <fileset dir="${build.dir}" />
+        </jar>
 
 		<antcall target="clean" />
 	</target>
