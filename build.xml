@@ -48,7 +48,6 @@
              manifest="JarManifest"
              compress="true"
              update="true"
-             whenmanifestonly="fail"
         >
             <fileset dir="${build.dir}" />
         </jar>
