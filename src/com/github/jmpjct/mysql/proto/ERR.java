@@ -5,21 +5,18 @@ package com.github.jmpjct.mysql.proto;
  *
  * https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html
  * https://dev.mysql.com/doc/refman/5.5/en/error-messages-client.html
- * 
+ *
  */
 
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 public class ERR extends Packet {
-    public Logger logger = Logger.getLogger("MySQL.ERR");
-    
     public long errorCode = 0;
     public String sqlState = "HY000";
     public String errorMessage = "";
     
     public ArrayList<byte[]> getPayload() {
-        this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
         payload.add(Proto.build_byte(Flags.ERR));
@@ -29,5 +26,19 @@ public class ERR extends Packet {
         payload.add(Proto.build_fixed_str(this.errorMessage.length(), this.errorMessage));
         
         return payload;
+    }
+    
+    public static ERR loadFromPacket(byte[] packet) {
+        ERR obj = new ERR();
+        Proto proto = new Proto(packet, 3);
+        
+        obj.sequenceId = proto.get_fixed_int(1);
+        proto.get_filler(1);
+        obj.errorCode = proto.get_fixed_int(2);
+        proto.get_filler(1);
+        obj.sqlState = proto.get_fixed_str(5);
+        obj.errorMessage = proto.get_eop_str();
+        
+        return obj;
     }
 }

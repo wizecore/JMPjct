@@ -1,14 +1,8 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A collection of mysql proto based functions
- */
-
 import org.apache.log4j.Logger;
 
 public class Proto {
-    public Logger logger = Logger.getLogger("MySQL.Proto");
-    
     public byte[] packet = null;
     public int offset = 0;
     
@@ -22,7 +16,6 @@ public class Proto {
     }
     
     public static byte[] build_fixed_int(int size, long value) {
-        Logger.getLogger("MySQL.Proto").trace("build_fixed_int");
         byte[] packet = new byte[size];
         
         if (size == 8) {
@@ -61,7 +54,6 @@ public class Proto {
     }
     
     public static byte[] build_lenenc_int(long value) {
-        Logger.getLogger("MySQL.Proto").trace("build_lenenc_int");
         byte[] packet = null;
         
         if (value < 251) {
@@ -98,7 +90,6 @@ public class Proto {
     }
     
     public static byte[] build_lenenc_str(String str) {
-        Logger.getLogger("MySQL.Proto").trace("build_lenenc_str");
         if (str.equals("")) {
             byte[] packet = new byte[1];
             packet[0] = 0x00;
@@ -114,12 +105,10 @@ public class Proto {
     }
     
     public static byte[] build_null_str(String str) {
-        Logger.getLogger("MySQL.Proto").trace("build_null_str");
         return Proto.build_fixed_str(str.length() + 1, str);
     }
     
     public static byte[] build_fixed_str(int size, String str) {
-        Logger.getLogger("MySQL.Proto").trace("build_fixed_str");
         byte[] packet = new byte[size];
         byte[] strByte = str.getBytes();
         if (strByte.length < packet.length)
@@ -129,7 +118,6 @@ public class Proto {
     }
     
     public static byte[] build_filler(int len) {
-        Logger.getLogger("MySQL.Proto").trace("build_filler");
         byte[] filler = new byte[len];
         for (int i = 0; i < len; i++)
             filler[i] = 0x00;
@@ -137,24 +125,20 @@ public class Proto {
     }
     
     public static byte[] build_byte(byte value) {
-        Logger.getLogger("MySQL.Proto").trace("build_byte");
         byte[] field = new byte[1];
         field[0] = value;
         return field;
     }
     
     public static char int2char(byte i) {
-        Logger.getLogger("MySQL.Proto").trace("int2char");
         return (char)i;
     }
     
     public static byte char2int(char i) {
-        Logger.getLogger("MySQL.Proto").trace("char2int");
         return (byte)i;
     }
     
     public long get_fixed_int(int size) {
-        this.logger.trace("get_fixed_int");
         byte[] bytes = null;
         
         if ( this.packet.length < (size + this.offset))
@@ -167,7 +151,6 @@ public class Proto {
     }
     
     public static long get_fixed_int(byte[] bytes) {
-        Logger.getLogger("MySQL.Proto").trace("get_fixed_int");
         long value = 0;
         
         for (int i = bytes.length-1; i > 0; i--) {
@@ -179,8 +162,11 @@ public class Proto {
         return value;
     }
     
+    public void get_filler(int size) {
+        this.offset += size;
+    }
+    
     public long get_lenenc_int() {
-        this.logger.trace("get_lenenc_int");
         int size = 0;
         
         // 1 byte int
@@ -204,7 +190,7 @@ public class Proto {
         }
         
         if (size == 0) {
-            this.logger.fatal("Decoding int at offset "+offset+" failed!");
+            Logger.getLogger("MySQL.Proto").fatal("Decoding int at offset "+offset+" failed!");
             return -1;
         }
         
@@ -212,7 +198,6 @@ public class Proto {
     }
     
     public String get_fixed_str(int len) {
-        this.logger.trace("get_fixed_str");
         String str = "";
         int start = this.offset;
         int end = this.offset+len;
@@ -226,7 +211,6 @@ public class Proto {
     }
     
     public String get_null_str() {
-        this.logger.trace("get_null_str");
         String str = "";
         int start = this.offset;
         int end = this.packet.length;
@@ -244,7 +228,6 @@ public class Proto {
     }
     
     public String get_eop_str() {
-        this.logger.trace("get_eop_str");
         String str = "";
         int start = this.offset;
         int end = this.packet.length;
@@ -262,7 +245,6 @@ public class Proto {
     }
     
     public String get_lenenc_str() {
-        this.logger.trace("get_lenenc_str");
         String str = "";
         int size = (int)this.get_lenenc_int();
         int start = this.offset;

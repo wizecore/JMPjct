@@ -1,15 +1,9 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A MySQL Auth Challenge Packet
- */
-
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 public class Auth_Challenge extends Packet {
-    public Logger logger = Logger.getLogger("MySQL.Auth.Challenge");
-    
     public long protocolVersion = 0x0a;
     public String serverVersion = "";
     public long connectionId = 0;
@@ -52,7 +46,6 @@ public class Auth_Challenge extends Packet {
     }
     
     public ArrayList<byte[]> getPayload() {
-        this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
         payload.add( Proto.build_fixed_int(1, this.protocolVersion));
@@ -74,7 +67,6 @@ public class Auth_Challenge extends Packet {
     }
     
     public static Auth_Challenge loadFromPacket(byte[] packet) {
-        Logger.getLogger("MySQL.Auth.Challenge").trace("loadFromPacket");
         Auth_Challenge obj = new Auth_Challenge();
         Proto proto = new Proto(packet, 3);
         
@@ -83,15 +75,15 @@ public class Auth_Challenge extends Packet {
         obj.serverVersion = proto.get_null_str();
         obj.connectionId = proto.get_fixed_int(4);
         obj.challenge1 = proto.get_fixed_str(8);
-        proto.get_fixed_str(1);
+        proto.get_filler(1);
         obj.capabilityFlags = proto.get_fixed_int(2);
         obj.characterSet = proto.get_fixed_int(1);
         obj.statusFlags = proto.get_fixed_int(2);
-        proto.get_fixed_str(13);
+        proto.get_filler(13);
         
         if (obj.hasCapabilityFlag(Flags.CLIENT_SECURE_CONNECTION)) {
             obj.challenge2 = proto.get_fixed_str(12);
-            proto.get_fixed_str(1);
+            proto.get_filler(1);
         }
         
         return obj;

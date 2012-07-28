@@ -1,9 +1,5 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A MySQL Packet
- */
-
 import java.util.ArrayList;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
@@ -13,9 +9,8 @@ import org.apache.commons.io.HexDump;
 import org.apache.log4j.Logger;
 
 public abstract class Packet {
-    
     public long sequenceId = 0;
-    
+
     public abstract ArrayList<byte[]> getPayload();
     
     public byte[] toPacket() {
@@ -177,8 +172,9 @@ public abstract class Packet {
             out.flush();
         }
         
-        if (Packet.getType(packet) == Flags.ERR)
+        if (Packet.getType(packet) == Flags.ERR) {
             return buffer;
+        }
         
         if (EOF.loadFromPacket(packet).hasStatusFlag(Flags.SERVER_MORE_RESULTS_EXISTS)) {
             buffer.add(Packet.read_packet(in));

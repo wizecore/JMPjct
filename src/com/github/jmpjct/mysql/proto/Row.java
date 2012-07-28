@@ -1,17 +1,11 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A MySQL Row Packet
- */
-
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import com.github.jmpjct.mysql.proto.Packet;
 import com.github.jmpjct.mysql.proto.Flags;
 
 public class Row extends Packet {
-    public Logger logger = Logger.getLogger("MySQL.Row");
-    
     public int type = Flags.ROW_TYPE_TEXT;
     public int colType = Flags.MYSQL_TYPE_VAR_STRING;
     public ArrayList<Object> data = new ArrayList<Object>();
@@ -70,7 +64,6 @@ public class Row extends Packet {
     // Add other addData for other types here
     
     public ArrayList<byte[]> getPayload() {
-        this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
         for (Object obj: this.data) {
@@ -92,5 +85,14 @@ public class Row extends Packet {
         }
         
         return payload;
+    }
+    
+    public static Row loadFromPacket(byte[] packet) {
+        Row obj = new Row();
+        Proto proto = new Proto(packet, 3);
+        
+        obj.sequenceId = proto.get_fixed_int(1);
+        
+        return obj;
     }
 }

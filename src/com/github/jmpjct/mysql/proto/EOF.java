@@ -1,15 +1,9 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A MySQL EOF Packet
- */
-
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 public class EOF extends Packet {
-    public Logger logger = Logger.getLogger("MySQL.EOF");
-    
     public long statusFlags = 0;
     public long warnings = 0;
     
@@ -30,7 +24,6 @@ public class EOF extends Packet {
     }
     
     public ArrayList<byte[]> getPayload() {
-        this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
         payload.add(Proto.build_byte(Flags.EOF));
@@ -41,17 +34,12 @@ public class EOF extends Packet {
     }
     
     public static EOF loadFromPacket(byte[] packet) {
-        Logger.getLogger("MySQL.EOF").trace("loadFromPacket");
         EOF obj = new EOF();
         Proto proto = new Proto(packet, 3);
         
         obj.sequenceId = proto.get_fixed_int(1);
-        
-        // Header
-        proto.get_fixed_int(1);
-        
+        proto.get_filler(1);
         obj.statusFlags = proto.get_fixed_int(2);
-        
         obj.warnings = proto.get_fixed_int(2);
         
         return obj;

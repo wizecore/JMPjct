@@ -1,15 +1,9 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A MySQL Textual Result Set
- */
-
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 public class ResultSet {
-    public Logger logger = Logger.getLogger("MySQL.ResultSet");
-    
     public long sequenceId = 1;
     public static long characterSet = 0;
     
@@ -17,7 +11,6 @@ public class ResultSet {
     public ArrayList<Row> rows = new ArrayList<Row>();
     
     public ArrayList<byte[]> toPackets() {
-        this.logger.trace("toPackets");
         ArrayList<byte[]> packets = new ArrayList<byte[]>();
         
         long maxRowSize = 0;

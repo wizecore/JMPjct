@@ -1,15 +1,9 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A MySQL OK Packet
- */
-
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 public class OK extends Packet {
-    public Logger logger = Logger.getLogger("MySQL.OK");
-    
     public long affectedRows = 0;
     public long lastInsertId = 0;
     public long statusFlags = 0;
@@ -28,7 +22,6 @@ public class OK extends Packet {
     }
     
     public ArrayList<byte[]> getPayload() {
-        this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
         payload.add(Proto.build_byte(Flags.OK));
@@ -38,5 +31,19 @@ public class OK extends Packet {
         payload.add(Proto.build_fixed_int(2, this.warnings));
         
         return payload;
+    }
+    
+    public static OK loadFromPacket(byte[] packet) {
+        OK obj = new OK();
+        Proto proto = new Proto(packet, 3);
+        
+        obj.sequenceId = proto.get_fixed_int(1);
+        proto.get_filler(1);
+        obj.affectedRows = proto.get_lenenc_int();
+        obj.lastInsertId = proto.get_lenenc_int();
+        obj.statusFlags = proto.get_fixed_int(2);
+        obj.warnings = proto.get_fixed_int(2);
+        
+        return obj;
     }
 }

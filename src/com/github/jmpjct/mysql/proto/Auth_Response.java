@@ -1,15 +1,9 @@
 package com.github.jmpjct.mysql.proto;
 
-/*
- * A MySQL Auth Response Packet
- */
-
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 
 public class Auth_Response extends Packet {
-    public Logger logger = Logger.getLogger("MySQL.Auth.Response");
-    
     public long capabilityFlags = Flags.CLIENT_PROTOCOL_41;
     public long maxPacketSize = 0;
     public long characterSet = 0;
@@ -34,7 +28,6 @@ public class Auth_Response extends Packet {
     }
     
     public ArrayList<byte[]> getPayload() {
-        this.logger.trace("getPayload");
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
         if ((this.capabilityFlags & Flags.CLIENT_PROTOCOL_41) != 0) {
@@ -60,7 +53,6 @@ public class Auth_Response extends Packet {
     }
     
     public static Auth_Response loadFromPacket(byte[] packet) {
-        Logger.getLogger("MySQL.Auth.Response").trace("loadFromPacket");
         Auth_Response obj = new Auth_Response();
         Proto proto = new Proto(packet, 3);
         

@@ -2,8 +2,7 @@ package com.github.jmpjct.mysql.proto;
 
 /*
  * Just a list of important flags that the Proxy code uses.
- * No need to keep it in the same file, so I broke it out
- * and put them here
+ * 
  */
 
 public class Flags {
@@ -152,5 +151,4 @@ public class Flags {
     public static final int RS_OK                               = 0;
     public static final int RS_FULL                             = 1;
     public static final int RS_COL_DEF                          = 2;
-    
 }
