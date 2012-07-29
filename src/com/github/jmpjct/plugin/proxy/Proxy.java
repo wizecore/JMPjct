@@ -61,6 +61,7 @@ public class Proxy extends Base {
         // Remove some flags from the reply
         context.authChallenge.removeCapabilityFlag(Flags.CLIENT_COMPRESS);
         context.authChallenge.removeCapabilityFlag(Flags.CLIENT_SSL);
+        context.authChallenge.removeCapabilityFlag(Flags.CLIENT_LOCAL_FILES);
         
         // Set the default result set creation to the server's character set
         ResultSet.characterSet = context.authChallenge.characterSet;
@@ -90,6 +91,7 @@ public class Proxy extends Base {
         
         context.authReply.removeCapabilityFlag(Flags.CLIENT_COMPRESS);
         context.authReply.removeCapabilityFlag(Flags.CLIENT_SSL);
+        context.authReply.removeCapabilityFlag(Flags.CLIENT_LOCAL_FILES);
         
         context.schema = context.authReply.schema;
     }
