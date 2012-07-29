@@ -55,6 +55,7 @@ public class Flags {
     public static final byte OK                                 = (byte)0x00;
     public static final byte ERR                                = (byte)0xff;
     public static final byte EOF                                = (byte)0xfe;
+    public static final byte LOCAL_INFILE                       = (byte)0xfb;
     
     public static final int SERVER_STATUS_IN_TRANS              = 0x0001;
     public static final int SERVER_STATUS_AUTOCOMMIT            = 0x0002;
@@ -151,4 +152,5 @@ public class Flags {
     public static final int RS_OK                               = 0;
     public static final int RS_FULL                             = 1;
     public static final int RS_COL_DEF                          = 2;
+    public static final int RS_DATA_FILE                        = 3;
 }

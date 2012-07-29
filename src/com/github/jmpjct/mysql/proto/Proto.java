@@ -117,6 +117,10 @@ public class Proto {
         return packet;
     }
     
+    public static byte[] build_eop_str(String str) {
+        return Proto.build_fixed_str(str.length(), str);
+    }
+    
     public static byte[] build_filler(int len) {
         byte[] filler = new byte[len];
         for (int i = 0; i < len; i++)
