@@ -66,6 +66,7 @@ public class Engine implements Runnable {
         this.clientSocket.setPerformancePreferences(0, 2, 1);
         this.clientSocket.setTcpNoDelay(true);
         this.clientSocket.setTrafficClass(0x10);
+        this.clientSocket.setKeepAlive(true);
         
         this.clientIn = new BufferedInputStream(this.clientSocket.getInputStream(), 16384);
         this.clientOut = this.clientSocket.getOutputStream();

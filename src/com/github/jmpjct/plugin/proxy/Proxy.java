@@ -46,6 +46,7 @@ public class Proxy extends Base {
         this.mysqlSocket.setPerformancePreferences(0, 2, 1);
         this.mysqlSocket.setTcpNoDelay(true);
         this.mysqlSocket.setTrafficClass(0x10);
+        this.mysqlSocket.setKeepAlive(true);
         
         this.logger.info("Connected to mysql server at "+this.mysqlHost+":"+this.mysqlPort);
         this.mysqlIn = new BufferedInputStream(this.mysqlSocket.getInputStream(), 16384);
