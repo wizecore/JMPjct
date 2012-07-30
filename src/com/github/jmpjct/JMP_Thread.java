@@ -17,11 +17,11 @@ import java.util.concurrent.Executors;
 import com.github.jmpjct.plugin.*;
 
 public class JMP_Thread implements Runnable {
-    int port;
-    boolean listening = true;
-    ServerSocket listener = null;
-    ArrayList<Base> plugins = new ArrayList<Base>();
-    Logger logger = Logger.getLogger("JMP_Thread");
+    public int port;
+    public boolean listening = true;
+    public ServerSocket listener = null;
+    public ArrayList<Base> plugins = new ArrayList<Base>();
+    public Logger logger = Logger.getLogger("JMP_Thread");
     
     public JMP_Thread(int port) {
         Thread.currentThread().setName("Listener: "+port);

@@ -50,6 +50,7 @@ public class Engine implements Runnable {
     
     // Buffer or directly pass though the data
     public boolean bufferResultSet = true;
+    public boolean packResultSet = true;
     
     // Modes
     public int mode = Flags.MODE_INIT;
