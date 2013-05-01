@@ -17,7 +17,9 @@ public class JMP {
     public static Properties config = new Properties();
     
     public static void main(String[] args) throws IOException {
-        JMP.config.load(new FileInputStream(System.getProperty("config")));        
+        FileInputStream config = new FileInputStream(System.getProperty("config"));
+        JMP.config.load(config);
+        config.close();
         
         Logger logger = Logger.getLogger("JMP");
         PropertyConfigurator.configure(JMP.config.getProperty("logConf").trim());
