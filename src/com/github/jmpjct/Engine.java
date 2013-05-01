@@ -81,6 +81,7 @@ public class Engine implements Runnable {
                         this.nextMode = Flags.MODE_READ_HANDSHAKE;
                         for (Base plugin : this.plugins)
                             plugin.init(this);
+                        break;
                     
                     case Flags.MODE_READ_HANDSHAKE:
                         this.logger.trace("MODE_READ_HANDSHAKE");
