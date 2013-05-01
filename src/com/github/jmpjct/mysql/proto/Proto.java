@@ -202,63 +202,63 @@ public class Proto {
     }
     
     public String get_fixed_str(int len) {
-        String str = "";
         int start = this.offset;
         int end = this.offset+len;
+        StringBuilder str = new StringBuilder(end);
         
         for (int i = start; i < end; i++) {
-            str += Proto.int2char(packet[i]);
+            str.append(Proto.int2char(packet[i]));
             this.offset += 1;
         }
         
-        return str;
+        return str.toString();
     }
     
     public String get_null_str() {
-        String str = "";
         int start = this.offset;
         int end = this.packet.length;
+        StringBuilder str = new StringBuilder(end);
         
         for (int i = start; i < end; i++) {
             if (packet[i] == 0x00) {
                 this.offset += 1;
                 break;
             }
-            str += Proto.int2char(packet[i]);
+            str.append(Proto.int2char(packet[i]));
             this.offset += 1;
         }
         
-        return str;
+        return str.toString();
     }
     
     public String get_eop_str() {
-        String str = "";
         int start = this.offset;
         int end = this.packet.length;
+        StringBuilder str = new StringBuilder(end);
         
         for (int i = start; i < end; i++) {
             if (packet[i] == 0x00 && i == packet.length-1) {
                 this.offset += 1;
                 break;
             }
-            str += Proto.int2char(packet[i]);
+            str.append(Proto.int2char(packet[i]));
             this.offset += 1;
         }
         
-        return str;
+        return str.toString();
     }
     
     public String get_lenenc_str() {
-        String str = "";
         int size = (int)this.get_lenenc_int();
         int start = this.offset;
         int end = this.offset + size;
+        StringBuilder str = new StringBuilder(end);
         
         for (int i = start; i < end; i++) {
-            str += Proto.int2char(packet[i]);
+            str.append(Proto.int2char(packet[i]));
             this.offset += 1;
         }
         
-        return str;
+        return str.toString();
     }
 }
