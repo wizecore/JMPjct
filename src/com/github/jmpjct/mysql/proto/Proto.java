@@ -122,9 +122,17 @@ public class Proto {
     }
     
     public static byte[] build_filler(int len) {
+        return Proto.build_filler(len, (byte)0x00);
+    }
+    
+    public static byte[] build_filler(int len, int filler_value) {
+        return Proto.build_filler(len, (byte)filler_value);
+    }
+    
+    public static byte[] build_filler(int len, byte filler_value) {
         byte[] filler = new byte[len];
         for (int i = 0; i < len; i++)
-            filler[i] = 0x00;
+            filler[i] = filler_value;
         return filler;
     }
     
