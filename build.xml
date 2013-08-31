@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>asf
 <project name="JMP" basedir="." default="build">
     
     <tstamp prefix="now" />
