@@ -68,9 +68,9 @@ public class Auth_Response extends Packet {
             obj.username = proto.get_null_str();
             
             if (obj.hasCapabilityFlag(Flags.CLIENT_SECURE_CONNECTION))
-                obj.authResponse = proto.get_null_str();
-            else
                 obj.authResponse = proto.get_lenenc_str();
+            else
+                obj.authResponse = proto.get_null_str();
             
             obj.schema = proto.get_eop_str();
         }
