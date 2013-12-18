@@ -17,7 +17,7 @@ public class JMP {
     public static Properties config = new Properties();
     
     public static void main(String[] args) throws IOException {
-        FileInputStream config = new FileInputStream(System.getProperty("config"));
+        FileInputStream config = new FileInputStream("conf/jmp.properties");
         JMP.config.load(config);
         config.close();
         

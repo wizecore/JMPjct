@@ -2,7 +2,7 @@
 <project name="JMP" basedir="." default="build">
     
     <tstamp prefix="now" />
-    <property name="version" value="0.1.0" />
+    <property name="version" value="0.1.1" />
     <property name="build.dir" value="build" />
     <property name="javac.source" value="1.6" />
 	<property name="javac.debug" value="false" />
