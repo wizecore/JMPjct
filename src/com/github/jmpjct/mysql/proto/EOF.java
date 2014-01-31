@@ -39,8 +39,8 @@ public class EOF extends Packet {
         
         obj.sequenceId = proto.get_fixed_int(1);
         proto.get_filler(1);
-        obj.statusFlags = proto.get_fixed_int(2);
         obj.warnings = proto.get_fixed_int(2);
+        obj.statusFlags = proto.get_fixed_int(2);
         
         return obj;
     }
