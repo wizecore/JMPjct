@@ -12,7 +12,7 @@ import com.github.jmpjct.plugin.Base;
 import com.github.jmpjct.Engine;
 import com.github.jmpjct.mysql.proto.Packet;
 import com.github.jmpjct.mysql.proto.Flags;
-import com.github.jmpjct.mysql.proto.Auth_Challenge;
+import com.github.jmpjct.mysql.proto.Handshake;
 import com.github.jmpjct.mysql.proto.Auth_Response;
 import com.github.jmpjct.mysql.proto.ResultSet;
 import com.github.jmpjct.mysql.proto.Com_Initdb;
@@ -57,18 +57,18 @@ public class Proxy extends Base {
         this.logger.trace("read_handshake");
         byte[] packet = Packet.read_packet(this.mysqlIn);
         
-        context.authChallenge = Auth_Challenge.loadFromPacket(packet);
+        context.handshake = Handshake.loadFromPacket(packet);
         
         // Remove some flags from the reply
-        context.authChallenge.removeCapabilityFlag(Flags.CLIENT_COMPRESS);
-        context.authChallenge.removeCapabilityFlag(Flags.CLIENT_SSL);
-        context.authChallenge.removeCapabilityFlag(Flags.CLIENT_LOCAL_FILES);
+        context.handshake.removeCapabilityFlag(Flags.CLIENT_COMPRESS);
+        context.handshake.removeCapabilityFlag(Flags.CLIENT_SSL);
+        context.handshake.removeCapabilityFlag(Flags.CLIENT_LOCAL_FILES);
         
         // Set the default result set creation to the server's character set
-        ResultSet.characterSet = context.authChallenge.characterSet;
+        ResultSet.characterSet = context.handshake.characterSet;
         
         // Set Replace the packet in the buffer
-        context.buffer.add(context.authChallenge.toPacket());
+        context.buffer.add(context.handshake.toPacket());
     }
     
     public void send_handshake(Engine context) throws IOException {

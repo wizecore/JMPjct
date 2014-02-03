@@ -13,7 +13,7 @@ import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import com.github.jmpjct.plugin.Base;
-import com.github.jmpjct.mysql.proto.Auth_Challenge;
+import com.github.jmpjct.mysql.proto.Handshake;
 import com.github.jmpjct.mysql.proto.Auth_Response;
 import com.github.jmpjct.mysql.proto.Flags;
 
@@ -40,7 +40,7 @@ public class Engine implements Runnable {
     public int expectedResultSet = Flags.RS_OK;
     
     // Connection info
-    public Auth_Challenge authChallenge = null;
+    public Handshake handshake = null;
     public Auth_Response authReply = null;
     
     public String schema = "";

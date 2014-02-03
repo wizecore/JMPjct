@@ -16,11 +16,11 @@ public class Debug extends Base {
     public Logger logger = Logger.getLogger("Plugin.Debug");
     
     public void read_handshake(Engine context) {
-        this.logger.debug("<- AuthChallengePacket");
-        this.logger.debug("   Server Version: "+context.authChallenge.serverVersion);
-        this.logger.debug("   Connection Id: "+context.authChallenge.connectionId);
+        this.logger.debug("<- HandshakePacket");
+        this.logger.debug("   Server Version: "+context.handshake.serverVersion);
+        this.logger.debug("   Connection Id: "+context.handshake.connectionId);
         this.logger.debug("   Server Capability Flags: "
-                          + Debug.dump_capability_flags(context.authChallenge.capabilityFlags));
+                          + Debug.dump_capability_flags(context.handshake.capabilityFlags));
     }
     
     public void read_auth(Engine context) {
