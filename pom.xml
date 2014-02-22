@@ -21,7 +21,7 @@
 
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.github.jmpjct</groupId>
+  <groupId>com.github.mpjct.jmpjct</groupId>
   <artifactId>jmp</artifactId>
   <version>0.2.0</version>
 </project>
