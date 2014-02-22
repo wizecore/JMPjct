@@ -74,5 +74,9 @@
         </java>
 	</target>
     
+    # TODO: Deploy Target
+        # TODO: Sign gpg -ab jmp-${version}.jar
+        # TODO: Upload to clojars.org
+
 </project>
     
