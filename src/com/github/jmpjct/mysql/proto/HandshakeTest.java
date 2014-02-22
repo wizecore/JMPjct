@@ -18,7 +18,7 @@ public class HandshakeTest {
             (byte)0x3a, (byte)0x00
         };
         
-        assertEquals(packet, Handshake.loadFromPacket(packet).toPacket());
+        assertArrayEquals(packet, Handshake.loadFromPacket(packet).toPacket());
     }
     
     
