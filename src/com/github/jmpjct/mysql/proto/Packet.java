@@ -63,6 +63,17 @@ public abstract class Packet {
         }
     }
     
+    public static final void dump_stderr(byte[] packet) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            HexDump.dump(packet, 0, out, 0);
+            System.err.println("Dumping packet\n"+out.toString());
+        }
+        catch (IOException e) {
+            return;
+        }
+    }
+
     public static byte[] read_packet(InputStream in) throws IOException {
         int b = 0;
         int size = 0;
