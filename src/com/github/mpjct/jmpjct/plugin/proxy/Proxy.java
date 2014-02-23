@@ -13,7 +13,7 @@ import com.github.mpjct.jmpjct.Engine;
 import com.github.mpjct.jmpjct.mysql.proto.Packet;
 import com.github.mpjct.jmpjct.mysql.proto.Flags;
 import com.github.mpjct.jmpjct.mysql.proto.Handshake;
-import com.github.mpjct.jmpjct.mysql.proto.Auth_Response;
+import com.github.mpjct.jmpjct.mysql.proto.HandshakeResponse;
 import com.github.mpjct.jmpjct.mysql.proto.ResultSet;
 import com.github.mpjct.jmpjct.mysql.proto.Com_Initdb;
 import com.github.mpjct.jmpjct.mysql.proto.Com_Query;
@@ -82,7 +82,7 @@ public class Proxy extends Base {
         byte[] packet = Packet.read_packet(context.clientIn);
         context.buffer.add(packet);
         
-        context.authReply = Auth_Response.loadFromPacket(packet);
+        context.authReply = HandshakeResponse.loadFromPacket(packet);
         
         if (!context.authReply.hasCapabilityFlag(Flags.CLIENT_PROTOCOL_41)) {
             this.logger.fatal("We do not support Protocols under 4.1");
