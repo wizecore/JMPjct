@@ -66,13 +66,13 @@ public class Proto {
             packet = new byte[1];
             packet[0] = (byte) ((value >>  0) & 0xFF);
         }
-        else if (value < (2^16 - 1)) {
+        else if (value < 65535) {
             packet = new byte[3];
             packet[0] = (byte) 0xFC;
             packet[1] = (byte) ((value >>  0) & 0xFF);
             packet[2] = (byte) ((value >>  8) & 0xFF);
         }
-        else if (value < (2^24 - 1)) {
+        else if (value < 16777215) {
             packet = new byte[4];
             packet[0] = (byte) 0xFD;
             packet[1] = (byte) ((value >>  0) & 0xFF);
