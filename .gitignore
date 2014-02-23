@@ -1,4 +1,4 @@
 *.class
 .svn
-JMP-*.jar
+jmp-*.jar
 build
