@@ -1,6 +1,7 @@
 package com.github.mpjct.jmpjct.mysql.proto;
 
 import org.apache.log4j.Logger;
+import java.util.ArrayList;
 
 public class Proto {
     public byte[] packet = null;
@@ -117,6 +118,10 @@ public class Proto {
     }
 
     public static byte[] build_fixed_str(int size, String str) {
+        return Proto.build_fixed_str(size, str, 0);
+    }
+
+    public static byte[] build_fixed_str(int size, String str, boolean base64) {
         byte[] packet = new byte[size];
         byte[] strByte = str.getBytes();
         if (strByte.length < packet.length)
@@ -280,5 +285,21 @@ public class Proto {
         }
 
         return str.toString();
+    }
+
+    public static byte[] arraylist_to_array(ArrayList<byte[]> input) {
+        int size = 0;
+        for (byte[] field: input)
+            size += field.length;
+
+        byte[] result = new byte[size];
+
+        int offset = 0;
+        for (byte[] field: input) {
+            System.arraycopy(field, 0, result, offset, field.length);
+            offset += field.length;
+        }
+
+        return result;
     }
 }
