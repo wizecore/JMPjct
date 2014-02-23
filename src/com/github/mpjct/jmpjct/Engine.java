@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import org.apache.log4j.Logger;
 import com.github.mpjct.jmpjct.plugin.Base;
 import com.github.mpjct.jmpjct.mysql.proto.Handshake;
-import com.github.mpjct.jmpjct.mysql.proto.Auth_Response;
+import com.github.mpjct.jmpjct.mysql.proto.HandshakeResponse;
 import com.github.mpjct.jmpjct.mysql.proto.Flags;
 
 public class Engine implements Runnable {
@@ -41,7 +41,7 @@ public class Engine implements Runnable {
     
     // Connection info
     public Handshake handshake = null;
-    public Auth_Response authReply = null;
+    public HandshakeResponse authReply = null;
     
     public String schema = "";
     public String query = "";
