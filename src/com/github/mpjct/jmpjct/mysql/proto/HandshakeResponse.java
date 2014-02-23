@@ -9,7 +9,7 @@ public class HandshakeResponse extends Packet {
     public long characterSet = 0;
     public String username = "";
     public long authResponseLen = 0;
-    public byte[] authResponse = "";
+    public String authResponse = "";
     public String schema = "";
     public String pluginName = "";
     public long clientAttributesLen = 0;
@@ -42,12 +42,12 @@ public class HandshakeResponse extends Packet {
             payload.add( Proto.build_null_str(this.username));
             if (this.hasCapabilityFlag(Flags.CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA)) {
                 payload.add( Proto.build_lenenc_int(this.authResponseLen));
-                payload.add( Proto.build_binary_fixed_str(this.authResponseLen, this.authResponse));
+                payload.add( Proto.build_fixed_str(this.authResponseLen, this.authResponse, true));
             }
             else {
                 if (this.hasCapabilityFlag(Flags.CLIENT_SECURE_CONNECTION)) {
                     payload.add( Proto.build_fixed_int(1, this.authResponseLen));
-                    payload.add( Proto.build_binary_fixed_str(this.authResponseLen, this.authResponse));
+                    payload.add( Proto.build_fixed_str(this.authResponseLen, this.authResponse, true));
                 }
                 else
                     payload.add( Proto.build_null_str(this.authResponse));
@@ -98,12 +98,12 @@ public class HandshakeResponse extends Packet {
             
             if (obj.hasCapabilityFlag(Flags.CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA)) {
                 obj.authResponseLen = proto.get_lenenc_int();
-                obj.authResponse = proto.get_binary_fixed_str(obj.authResponseLen);
+                obj.authResponse = proto.get_fixed_str(obj.authResponseLen, true);
             }
             else  {
                 if (obj.hasCapabilityFlag(Flags.CLIENT_SECURE_CONNECTION)) {
                     obj.authResponseLen = proto.get_fixed_int(1);
-                    obj.authResponse = proto.get_binary_fixed_str(obj.authResponseLen);
+                    obj.authResponse = proto.get_fixed_str(obj.authResponseLen, true);
                 }
                 else {
                     obj.authResponse = proto.get_null_str();

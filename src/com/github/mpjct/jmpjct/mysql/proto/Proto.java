@@ -1,5 +1,6 @@
 package com.github.mpjct.jmpjct.mysql.proto;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
 
@@ -117,13 +118,23 @@ public class Proto {
         return Proto.build_fixed_str((int)size, str);
     }
 
+    public static byte[] build_fixed_str(long size, String str, boolean base64) {
+        return Proto.build_fixed_str((int)size, str, base64);
+    }
+
     public static byte[] build_fixed_str(int size, String str) {
-        return Proto.build_fixed_str(size, str, 0);
+        return Proto.build_fixed_str(size, str, false);
     }
 
     public static byte[] build_fixed_str(int size, String str, boolean base64) {
         byte[] packet = new byte[size];
-        byte[] strByte = str.getBytes();
+        byte[] strByte = null;
+
+        if (base64)
+            strByte = Base64.decodeBase64(str);
+        else
+            strByte = str.getBytes();
+
         if (strByte.length < packet.length)
             size = strByte.length;
         System.arraycopy(strByte, 0, packet, 0, size);
@@ -226,10 +237,25 @@ public class Proto {
         return this.get_fixed_str((int)len);
     }
 
+    public String get_fixed_str(long len, boolean base64) {
+        return this.get_fixed_str((int)len, base64);
+    }
+
     public String get_fixed_str(int len) {
+        return this.get_fixed_str(len, false);
+    }
+
+    public String get_fixed_str(int len, boolean base64) {
         int start = this.offset;
         int end = this.offset+len;
-        StringBuilder str = new StringBuilder(end);
+
+        if (base64) {
+            byte[] chunk = new byte[len];
+            System.arraycopy(this.packet, start, chunk, 0, len);
+            this.offset += len;
+            return Base64.encodeBase64String(chunk);
+        }
+        StringBuilder str = new StringBuilder(len);
 
         for (int i = start; i < end; i++) {
             str.append(Proto.int2char(packet[i]));
@@ -242,7 +268,7 @@ public class Proto {
     public String get_null_str() {
         int start = this.offset;
         int end = this.packet.length;
-        StringBuilder str = new StringBuilder(end);
+        StringBuilder str = new StringBuilder(end-start);
 
         for (int i = start; i < end; i++) {
             if (packet[i] == 0x00) {
@@ -259,7 +285,7 @@ public class Proto {
     public String get_eop_str() {
         int start = this.offset;
         int end = this.packet.length;
-        StringBuilder str = new StringBuilder(end);
+        StringBuilder str = new StringBuilder(end-start);
 
         for (int i = start; i < end; i++) {
             if (packet[i] == 0x00 && i == packet.length-1) {
@@ -277,7 +303,7 @@ public class Proto {
         int size = (int)this.get_lenenc_int();
         int start = this.offset;
         int end = this.offset + size;
-        StringBuilder str = new StringBuilder(end);
+        StringBuilder str = new StringBuilder(end-start);
 
         for (int i = start; i < end; i++) {
             str.append(Proto.int2char(packet[i]));

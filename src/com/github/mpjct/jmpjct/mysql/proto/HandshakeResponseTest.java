@@ -36,9 +36,6 @@ public class HandshakeResponseTest {
             (byte)0x61, (byte)0x73, (byte)0x73, (byte)0x77, (byte)0x6f, (byte)0x72, (byte)0x64, (byte)0x00,
         };
         
-        Packet.dump_stderr(packet);
-        Packet.dump_stderr(HandshakeResponse.loadFromPacket(packet).toPacket());
-        
         assertArrayEquals(packet, HandshakeResponse.loadFromPacket(packet).toPacket());
     }
 

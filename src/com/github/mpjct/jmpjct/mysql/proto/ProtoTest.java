@@ -28,7 +28,7 @@ public class ProtoTest {
         
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
-        payload.add( Proto.build_fixed_str(packet.length, proto.get_fixed_str(packet.length)));
+        payload.add( Proto.build_fixed_str(packet.length, proto.get_fixed_str(packet.length, true), true));
         
         assertArrayEquals(packet, Proto.arraylist_to_array(payload));
     }
