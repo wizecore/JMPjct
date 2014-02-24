@@ -1,6 +1,8 @@
 package com.github.mpjct.jmpjct.mysql.proto;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.DecoderException;
 import org.apache.log4j.Logger;
 import java.util.ArrayList;
 
@@ -338,19 +340,11 @@ public class Proto {
     }
 
     public static byte[] packet_string_to_bytes(String str) {
+        byte[] res = null;
         str = str.replaceAll("\\s","").toUpperCase();
-        byte[] bytes = new byte[str.length()/2];
-        String sub = null;
-
-        for (int i = 0; i < str.length(); i=i+2) {
-            sub = str.substring(i, i+2);
-            if (sub.equals("FF")) {
-                bytes[i/2] = (byte)0xFF;
-            }
-            else {
-                bytes[i/2] = Byte.parseByte(sub, 16);
-            }
-        }
-        return bytes;
+        try {
+            res = Hex.decodeHex(str.toCharArray());
+        } catch (DecoderException e) {}
+        return res;
     }
 }
