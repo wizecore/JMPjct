@@ -34,6 +34,14 @@ public class Proto {
             packet[6] = (byte) ((value >> 48) & 0xFF);
             packet[7] = (byte) ((value >> 56) & 0xFF);
         }
+        else if (size == 6) {
+            packet[0] = (byte) ((value >>  0) & 0xFF);
+            packet[1] = (byte) ((value >>  8) & 0xFF);
+            packet[2] = (byte) ((value >> 16) & 0xFF);
+            packet[3] = (byte) ((value >> 24) & 0xFF);
+            packet[4] = (byte) ((value >> 32) & 0xFF);
+            packet[5] = (byte) ((value >> 40) & 0xFF);
+        }
         else if (size == 4) {
             packet[0] = (byte) ((value >>  0) & 0xFF);
             packet[1] = (byte) ((value >>  8) & 0xFF);
