@@ -17,4 +17,15 @@ public class Com_QueryTest {
         assertArrayEquals(packet, pkt.toPacket());
         assertEquals(pkt.query, "select \"012345678901234567890123456789012345\"");
     }
+    
+    @Test
+    public void test2() {
+        byte[] packet = Proto.packet_string_to_bytes(""
+            + "09 00 00 00 03 53 45 4c 45 43 54 20 31"
+        );
+
+        Com_Query pkt = Com_Query.loadFromPacket(packet);
+        assertArrayEquals(packet, pkt.toPacket());
+        assertEquals(pkt.query, "SELECT 1");
+    }
 }
