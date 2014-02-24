@@ -31,7 +31,6 @@ public class SSLRequest extends Packet {
         payload.add( Proto.build_fixed_int(4, this.maxPacketSize));
         payload.add( Proto.build_fixed_int(1, this.characterSet));
         payload.add( Proto.build_filler(23));
-        payload.add( Proto.build_null_str(this.username));
 
         return payload;
     }
