@@ -331,7 +331,7 @@ public class ProtoTest {
         };
         assertArrayEquals(expected, Proto.build_byte((byte)0x00));
     }
-    
+
     @Test
     public void test29() {
         byte[] expected = new byte[] {
@@ -339,12 +339,81 @@ public class ProtoTest {
         };
         assertArrayEquals(expected, Proto.build_byte((byte)0x01));
     }
-    
+
     @Test
     public void test30() {
         byte[] expected = new byte[] {
             (byte)0xFF,
         };
         assertArrayEquals(expected, Proto.build_byte((byte)0xFF));
+    }
+
+    @Test
+    public void test31() {
+        byte[] packet = new byte[] {
+            (byte)0xFF,
+        };
+
+        Proto proto = new Proto(packet);
+        ArrayList<byte[]> payload = new ArrayList<byte[]>();
+        payload.add( Proto.build_fixed_str(packet.length, proto.get_fixed_str(packet.length, true), true));
+        assertArrayEquals(packet, Proto.arraylist_to_array(payload));
+    }
+
+    @Test
+    public void test32() {
+        byte[] packet = new byte[] {
+            (byte)0xFF, (byte)0xFF,
+        };
+
+        Proto proto = new Proto(packet);
+        ArrayList<byte[]> payload = new ArrayList<byte[]>();
+        payload.add( Proto.build_fixed_str(packet.length, proto.get_fixed_str(packet.length, true), true));
+        assertArrayEquals(packet, Proto.arraylist_to_array(payload));
+    }
+
+    @Test
+    public void test33() {
+        byte[] packet = new byte[] {
+            (byte)0xFF, (byte)0xFF, (byte)0xFF,
+        };
+
+        Proto proto = new Proto(packet);
+        ArrayList<byte[]> payload = new ArrayList<byte[]>();
+        payload.add( Proto.build_fixed_str(packet.length, proto.get_fixed_str(packet.length, true), true));
+        assertArrayEquals(packet, Proto.arraylist_to_array(payload));
+    }
+
+    @Test
+    public void test34() {
+        byte[] packet = new byte[] {
+            (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF,
+        };
+
+        Proto proto = new Proto(packet);
+        ArrayList<byte[]> payload = new ArrayList<byte[]>();
+        payload.add( Proto.build_fixed_str(packet.length, proto.get_fixed_str(packet.length, true), true));
+        assertArrayEquals(packet, Proto.arraylist_to_array(payload));
+    }
+
+    @Test
+    public void test35() {
+        byte[] packet = new byte[] {
+            (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF,
+        };
+
+        Proto proto = new Proto(packet);
+        ArrayList<byte[]> payload = new ArrayList<byte[]>();
+        payload.add( Proto.build_fixed_str(packet.length, proto.get_fixed_str(packet.length, true), true));
+        assertArrayEquals(packet, Proto.arraylist_to_array(payload));
+    }
+
+    @Test
+    public void test36() {
+        byte[] packet = Proto.packet_string_to_bytes("5C 49 4D 5E 4E 58 4F 47 00");
+        Proto proto = new Proto(packet);
+        ArrayList<byte[]> payload = new ArrayList<byte[]>();
+        payload.add( Proto.build_eop_str(proto.get_eop_str(true), true));
+        assertArrayEquals(packet, Proto.arraylist_to_array(payload));
     }
 }

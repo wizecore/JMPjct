@@ -106,14 +106,22 @@ public class Proto {
     }
 
     public static byte[] build_lenenc_str(String str) {
+        return Proto.build_lenenc_str(str, false);
+    }
+
+    public static byte[] build_lenenc_str(String str, boolean base64) {
         if (str.equals("")) {
             byte[] packet = new byte[1];
             packet[0] = 0x00;
             return packet;
         }
 
-        byte[] size = Proto.build_lenenc_int(str.length());
-        byte[] strByte = Proto.build_fixed_str(str.length(), str);
+        int strsize = str.length();
+        if (base64)
+            strsize = Base64.decodeBase64(str).length;
+
+        byte[] size = Proto.build_lenenc_int(strsize);
+        byte[] strByte = Proto.build_fixed_str(strsize, str, base64);
         byte[] packet = new byte[size.length + strByte.length];
         System.arraycopy(size, 0, packet, 0, size.length);
         System.arraycopy(strByte, 0, packet, size.length, strByte.length);
@@ -121,7 +129,14 @@ public class Proto {
     }
 
     public static byte[] build_null_str(String str) {
-        return Proto.build_fixed_str(str.length() + 1, str);
+        return Proto.build_null_str(str, false);
+    }
+
+    public static byte[] build_null_str(String str, boolean base64) {
+        int size = str.length() + 1;
+        if (base64)
+            size = Base64.decodeBase64(str).length + 1;
+        return Proto.build_fixed_str(str.length() + 1, str, base64);
     }
 
     public static byte[] build_fixed_str(long size, String str) {
@@ -152,7 +167,14 @@ public class Proto {
     }
 
     public static byte[] build_eop_str(String str) {
-        return Proto.build_fixed_str(str.length(), str);
+        return Proto.build_eop_str(str, false);
+    }
+
+    public static byte[] build_eop_str(String str, boolean base64) {
+        int size = str.length();
+        if (base64)
+            size = Base64.decodeBase64(str).length;
+        return Proto.build_fixed_str(size, str, base64);
     }
 
     public static byte[] build_filler(int len) {
@@ -252,19 +274,14 @@ public class Proto {
     }
 
     public String get_fixed_str(int len) {
-        return this.get_fixed_str(len, false);
-    }
-
-    public String get_fixed_str(int len, boolean base64) {
         int start = this.offset;
         int end = this.offset+len;
 
-        if (base64) {
-            byte[] chunk = new byte[len];
-            System.arraycopy(this.packet, start, chunk, 0, len);
-            this.offset += len;
-            return Base64.encodeBase64String(chunk);
+        if (end > this.packet.length) {
+            end = this.packet.length;
+            len = end - start;
         }
+
         StringBuilder str = new StringBuilder(len);
 
         for (int i = start; i < end; i++) {
@@ -275,52 +292,58 @@ public class Proto {
         return str.toString();
     }
 
-    public String get_null_str() {
+    public String get_fixed_str(int len, boolean base64) {
         int start = this.offset;
-        int end = this.packet.length;
-        StringBuilder str = new StringBuilder(end-start);
+        int end = this.offset+len;
 
-        for (int i = start; i < end; i++) {
-            if (packet[i] == 0x00) {
-                this.offset += 1;
-                break;
-            }
-            str.append(Proto.int2char(packet[i]));
-            this.offset += 1;
+        if (end > this.packet.length) {
+            end = this.packet.length;
+            len = end - start;
         }
 
-        return str.toString();
+        if (!base64)
+            return this.get_fixed_str(len);
+
+        byte[] chunk = new byte[len];
+        System.arraycopy(this.packet, start, chunk, 0, len);
+        this.offset += len;
+        return Base64.encodeBase64String(chunk);
+    }
+
+    public String get_null_str() {
+        return this.get_null_str(false);
+    }
+
+    public String get_null_str(boolean base64) {
+        int len = 0;
+
+        for (int i = this.offset; i < this.packet.length; i++) {
+            if (packet[i] == 0x00)
+                break;
+            len += 1;
+        }
+
+        String str = this.get_fixed_str(len, base64);
+        this.offset += 1;
+        return str;
     }
 
     public String get_eop_str() {
-        int start = this.offset;
-        int end = this.packet.length;
-        StringBuilder str = new StringBuilder(end-start);
+        return this.get_eop_str(false);
+    }
 
-        for (int i = start; i < end; i++) {
-            if (packet[i] == 0x00 && i == packet.length-1) {
-                this.offset += 1;
-                break;
-            }
-            str.append(Proto.int2char(packet[i]));
-            this.offset += 1;
-        }
-
-        return str.toString();
+    public String get_eop_str(boolean base64) {
+        int len = this.packet.length - this.offset;
+        return this.get_fixed_str(len, base64);
     }
 
     public String get_lenenc_str() {
-        int size = (int)this.get_lenenc_int();
-        int start = this.offset;
-        int end = this.offset + size;
-        StringBuilder str = new StringBuilder(end-start);
+        return this.get_lenenc_str(false);
+    }
 
-        for (int i = start; i < end; i++) {
-            str.append(Proto.int2char(packet[i]));
-            this.offset += 1;
-        }
-
-        return str.toString();
+    public String get_lenenc_str(boolean base64) {
+        int len = (int)this.get_lenenc_int();
+        return this.get_fixed_str(len, base64);
     }
 
     public static byte[] arraylist_to_array(ArrayList<byte[]> input) {
