@@ -338,11 +338,18 @@ public class Proto {
     }
 
     public static byte[] packet_string_to_bytes(String str) {
-        str = str.replaceAll("\\s","");
+        str = str.replaceAll("\\s","").toUpperCase();
         byte[] bytes = new byte[str.length()/2];
+        String sub = null;
 
         for (int i = 0; i < str.length(); i=i+2) {
-            bytes[i/2] = Byte.parseByte(str.substring(i, i+2), 16);
+            sub = str.substring(i, i+2);
+            if (sub.equals("FF")) {
+                bytes[i/2] = (byte)0xFF;
+            }
+            else {
+                bytes[i/2] = Byte.parseByte(sub, 16);
+            }
         }
         return bytes;
     }
