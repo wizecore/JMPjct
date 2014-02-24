@@ -63,7 +63,7 @@
     </target>
 
     <target name="run" description="Run JMP">
-        <antcall target="build" />
+        <antcall target="test" />
         <java jar="jmp-${version}.jar"
               classpathref="classpath"
               fork="true"
@@ -77,14 +77,8 @@
         </java>
     </target>
 
-    <!--
-    # TODO: Deploy Target
-        # TODO: Sign gpg -ab jmp-${version}.jar
-        # TODO: Upload to clojars.org
-    -->
-
     <target name="test" depends="build">
-        <junit>
+        <junit haltonfailure="true">
             <classpath>
               <path refid="classpath"/>
               <pathelement location="bin" />
@@ -99,7 +93,24 @@
             <formatter type="brief" usefile="false"/>
         </junit>
     </target>
+    
+    <target name="sign" depends="test">
+        <delete file="jmp-${version}.jar.asc"/>
+        
+        <exec executable="gpg">
+            <arg value="-ab" />
+            <arg value="jmp-${version}.jar" />
+        </exec>
+    </target>
 
+    <target name="deploy" depends="sign">
+        <exec executable="scp">
+            <arg value="pom.xml" />
+            <arg value="jmp-${version}.jar" />
+            <arg value="jmp-${version}.jar.asc" />
+            <arg value="clojars@clojars.org:" />
+        </exec>
+    </target>
 
 </project>
 
