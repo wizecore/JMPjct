@@ -347,6 +347,4 @@ public class ProtoTest {
         };
         assertArrayEquals(expected, Proto.build_byte((byte)0xFF));
     }
-    
-    
 }
