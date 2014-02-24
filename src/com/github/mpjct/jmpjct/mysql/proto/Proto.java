@@ -336,4 +336,14 @@ public class Proto {
 
         return result;
     }
+
+    public static byte[] packet_string_to_bytes(String str) {
+        str = str.replaceAll("\\s","");
+        byte[] bytes = new byte[str.length()/2];
+
+        for (int i = 0; i < str.length(); i=i+2) {
+            bytes[i/2] = Byte.parseByte(str.substring(i, i+2), 16);
+        }
+        return bytes;
+    }
 }

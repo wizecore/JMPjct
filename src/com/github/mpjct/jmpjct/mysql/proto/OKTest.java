@@ -6,9 +6,10 @@ import static org.junit.Assert.*;
 public class OKTest {
     @Test
     public void test1() {
-        byte[] packet = new byte[] {
-            (byte)0x07, (byte)0x00, (byte)0x00, (byte)0x02, (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x02, (byte)0x00, (byte)0x00, (byte)0x00,
-        };
+        byte[] packet = Proto.packet_string_to_bytes(
+            "07 00 00 02 00 00 00 02    00 00 00"
+        );
+
         OK ok = OK.loadFromPacket(packet);
         assertArrayEquals(packet, ok.toPacket());
         assertEquals(ok.affectedRows, 0);
