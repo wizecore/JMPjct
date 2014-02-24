@@ -21,6 +21,10 @@ public class OK extends Packet {
         this.statusFlags ^= flag;
     }
     
+    public boolean hasStatusFlag(long flag) {
+        return ((this.statusFlags & flag) == flag);
+    }
+    
     public ArrayList<byte[]> getPayload() {
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
