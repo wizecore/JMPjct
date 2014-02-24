@@ -27,8 +27,8 @@ public class EOF extends Packet {
         ArrayList<byte[]> payload = new ArrayList<byte[]>();
         
         payload.add(Proto.build_byte(Flags.EOF));
-        payload.add(Proto.build_fixed_int(2, this.statusFlags));
         payload.add(Proto.build_fixed_int(2, this.warnings));
+        payload.add(Proto.build_fixed_int(2, this.statusFlags));
         
         return payload;
     }
