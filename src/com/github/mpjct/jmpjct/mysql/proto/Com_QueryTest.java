@@ -28,4 +28,17 @@ public class Com_QueryTest {
         assertArrayEquals(packet, pkt.toPacket());
         assertEquals(pkt.query, "SELECT 1");
     }
+    
+    @Test
+    public void test3() {
+        byte[] packet = Proto.packet_string_to_bytes(""
+            + "21 00 00 00 03 73 65 6c    65 63 74 20 40 40 76 65"
+            + "72 73 69 6f 6e 5f 63 6f    6d 6d 65 6e 74 20 6c 69"
+            + "6d 69 74 20 31                                    "
+        );
+
+        Com_Query pkt = Com_Query.loadFromPacket(packet);
+        assertArrayEquals(packet, pkt.toPacket());
+        assertEquals(pkt.query, "select @@version_comment limit 1");
+    }
 }
