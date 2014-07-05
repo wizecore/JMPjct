@@ -1,6 +1,7 @@
 *.class
 .svn
-JMP-*.jar
+jmp-*.jar
+jmp-*.jar.asc
 build
 .idea/.name
 .idea/compiler.xml
