@@ -12,7 +12,7 @@ public class Column extends Packet {
     public String org_name = "";
     public long characterSet = 0;
     public long columnLength = 0;
-    public long type = Flags.MYSQL_TYPE_VAR_STRING;
+    public long type = Flags.MYSQL_TYPE_VARCHAR;
     public long flags = 0;
     public long decimals = 31;
     
