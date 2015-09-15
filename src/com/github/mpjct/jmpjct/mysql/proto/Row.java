@@ -1,11 +1,13 @@
 package com.github.mpjct.jmpjct.mysql.proto;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
 import org.apache.log4j.Logger;
-import com.github.mpjct.jmpjct.mysql.proto.Packet;
-import com.github.mpjct.jmpjct.mysql.proto.Flags;
 
 public class Row extends Packet {
+	public Logger logger = Logger.getLogger("Engine");
+	 
     public int type = Flags.ROW_TYPE_TEXT;
     public int colType = Flags.MYSQL_TYPE_VAR_STRING;
     public ArrayList<Object> data = new ArrayList<Object>();
@@ -71,10 +73,16 @@ public class Row extends Packet {
                 case Flags.ROW_TYPE_TEXT: 
                     if (obj instanceof String)
                         payload.add(Proto.build_lenenc_str((String)obj));
-                    else if (obj instanceof Integer || obj == null)
+                    else
+                    if (obj instanceof Integer)
                         payload.add(Proto.build_lenenc_int((Integer)obj));
-                    else {
+                    else 
+                    if (obj == null) {
+                    	// If a field is NULL `0xfb` is sent as described in `length encoded integer`_.
+                    	payload.add(Proto.build_lenenc_int((Integer)0xfb));
+                    } else {
                         // trigger error
+                    	logger.warn("Invalid column value: " + obj);
                     }
                     break;
                 case Flags.ROW_TYPE_BINARY:
