@@ -1,12 +1,16 @@
 package com.github.mpjct.jmpjct.mysql.proto;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.DecoderException;
-import org.apache.log4j.Logger;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.log4j.Logger;
+
 public class Proto {
+	public static String CHARSET = "ISO-8859-1";
+	
     public byte[] packet = null;
     public int offset = 0;
 
@@ -116,7 +120,13 @@ public class Proto {
             return packet;
         }
 
-        int strsize = str.length();
+        byte[] bb = null;
+        try {
+			bb = str.getBytes(CHARSET);
+		} catch (UnsupportedEncodingException e) {
+			// never here
+		}
+        int strsize = bb.length;
         if (base64)
             strsize = Base64.decodeBase64(str).length;
 
@@ -157,8 +167,13 @@ public class Proto {
 
         if (base64)
             strByte = Base64.decodeBase64(str);
-        else
-            strByte = str.getBytes();
+        else {
+            try {
+            	strByte = str.getBytes(CHARSET);
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
+        }
 
         if (strByte.length < packet.length)
             size = strByte.length;
@@ -282,14 +297,13 @@ public class Proto {
             len = end - start;
         }
 
-        StringBuilder str = new StringBuilder(len);
-
-        for (int i = start; i < end; i++) {
-            str.append(Proto.int2char(packet[i]));
-            this.offset += 1;
+        this.offset += len;
+        try {
+        	return new String(packet, offset, len, CHARSET);
+        } catch (Exception e) {
+        	// Should not be here
+        	return "";
         }
-
-        return str.toString();
     }
 
     public String get_fixed_str(int len, boolean base64) {
